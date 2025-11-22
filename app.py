@@ -15,9 +15,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # ==========================
 try:
     conn = psycopg2.connect(
-        dbname="Complaints",   # your DB name
+        dbname="complaint_portal",   # Correct DB name
         user="postgres",
-        password="meghaj",     # your password
+        password="meghaj",
         host="localhost",
         port=5432
     )
@@ -29,7 +29,7 @@ except Exception as e:
 # ==========================
 # POST: Store complaint + image
 # ==========================
-@app.route("/api/complaints", methods=["POST"])
+@app.route("/portal/api/complaints", methods=["POST"])
 def add_complaint():
     data = request.form
 
@@ -41,7 +41,6 @@ def add_complaint():
     latitude = data.get("latitude")
     longitude = data.get("longitude")
 
-    # ===== HANDLE IMAGE FILE =====
     image_file = request.files.get("files[]")
     image_url = None
 
@@ -50,10 +49,9 @@ def add_complaint():
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         image_file.save(filepath)
 
-    # 🔥 Store full URL
-    BASE_URL = "http://localhost:5000"  # change when deploying
+    # 🔥 Updated BASE URL for deployment
+    BASE_URL = "https://gist.aeronica.in/portal"
     image_url = f"{BASE_URL}/uploads/{filename}"
-
 
     sql = """
         INSERT INTO complaints(fullname, phone, complaint_type, description, urgency, latitude, longitude, image_url)
@@ -67,14 +65,14 @@ def add_complaint():
 # ==========================
 # HOST UPLOADED IMAGES
 # ==========================
-@app.route("/uploads/<path:filename>")
+@app.route("/portal/uploads/<path:filename>")
 def serve_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 # ==========================
 # GET: Fetch complaints
 # ==========================
-@app.route("/api/complaints", methods=["GET"])
+@app.route("/portal/api/complaints", methods=["GET"])
 def get_complaints():
     cursor.execute("SELECT * FROM complaints ORDER BY created_at DESC")
     rows = cursor.fetchall()
@@ -91,10 +89,11 @@ def get_complaints():
             "latitude": r[6],
             "longitude": r[7],
             "created_at": str(r[8]),
-            "image_url": r[9]  # <-- newly added
+            "image_url": r[9]
         })
 
     return jsonify({"complaints": complaints})
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
