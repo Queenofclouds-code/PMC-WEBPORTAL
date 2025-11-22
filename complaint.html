@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PMC Complaint Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="gov-header">
+  <h1>Register a Complaint</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="complaint.html" class="active">Complaint Form</a>
+    <a href="view-complaints.html">View Complaints</a>
+  </nav>
+</header>
+
+<div class="container">
+<div class="form-card">
+
+  <form id="complaintForm" enctype="multipart/form-data">
+
+    <label>Full Name</label>
+    <input type="text" id="fullname" required pattern="[A-Za-z ]{3,}" title="Enter a valid name (letters only)">
+
+
+    <label>Phone Number</label>
+    <input type="tel" id="phone" required pattern="[0-9]{10}" maxlength="10" title="Enter a valid 10-digit phone number">
+
+
+    <label>Complaint Type</label>
+    <select id="complaintType" required>
+      <option value="">Select</option>
+      <option>Garbage</option>
+      <option>Street Light</option>
+      <option>Water Supply</option>
+      <option>Sewage</option>
+      <option>Other</option>
+    </select>
+
+    <label>Description</label>
+    <textarea id="description" rows="4"></textarea>
+
+    <label>Urgency Level</label>
+    <select id="urgency" required>
+      <option value="">Select</option>
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
+
+    <label>Upload Images / Videos</label>
+    <input type="file" id="files" accept="image/*,video/*" multiple />
+
+    <button type="button" id="openCameraBtn" class="camera-btn">📸 Capture Photo Using Camera</button>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" />
+
+    <div class="preview" id="preview"></div>
+
+    <input type="hidden" id="latitude">
+    <input type="hidden" id="longitude">
+
+    <button type="submit" class="submit-btn">Submit Complaint</button>
+
+  </form>
+
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
