@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # ======== FILE UPLOAD LOCATION =========
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = "/var/www/complaint_uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ==========================
