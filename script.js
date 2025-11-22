@@ -122,7 +122,7 @@ if (!/^[0-9]{10}$/.test(phone.trim())) {
   [...cameraInput.files].forEach(file => formData.append("files[]", file));
 
   try {
-    const res = await fetch("http://localhost:5000/api/complaints", {
+    const res = await fetch("/portal/api/complaints", {
       method: "POST",
       body: formData,
     });
