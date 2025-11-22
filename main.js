@@ -21,7 +21,7 @@ map.addLayer(markers);
 
 // Fetch & Load Complaints
 function loadComplaints(filterType = "All") {
-  fetch("http://localhost:5000/api/complaints")
+  fetch("https://gist.aeronica.in/portal/api/complaints")   // ✅ LIVE SERVER
     .then(res => res.json())
     .then(data => {
 
