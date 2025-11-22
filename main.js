@@ -5,13 +5,11 @@
 // Initialize Map
 let map = L.map("map").setView([18.5204, 73.8567], 12);
 
-L.tileLayer(
-  "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png",
-  {
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 20,
-    attribution: "© OpenStreetMap & Stadia Maps"
-  }
-).addTo(map);
+    attribution: "© OpenStreetMap Contributors"
+}).addTo(map);
+
 
 
 
