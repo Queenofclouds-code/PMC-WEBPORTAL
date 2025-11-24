@@ -1,19 +1,17 @@
 // ============================================
-// COLLAPSIBLE PANEL LOGIC
+// COLLAPSIBLE SPLITTER ( | < | )
 // ============================================
 const panel = document.getElementById("filterPanel");
-const collapseBtn = document.getElementById("collapseBtn");
+const splitBtn = document.getElementById("collapseBtn");
 
-collapseBtn.addEventListener("click", () => {
+splitBtn.addEventListener("click", () => {
 
     panel.classList.toggle("collapsed");
-    collapseBtn.classList.toggle("panel-collapsed");
+    splitBtn.classList.toggle("collapsed");
 
-    collapseBtn.innerHTML = panel.classList.contains("collapsed") ? ">" : "<";
+    splitBtn.innerHTML = panel.classList.contains("collapsed") ? ">" : "<";
 
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 400);
+    setTimeout(() => map.invalidateSize(), 300);
 });
 
 // ============================================
@@ -121,7 +119,7 @@ function loadComplaints(filterType = "All") {
 // INITIAL LOAD
 loadComplaints();
 
-// FILTER BUTTONS
+// FILTER BUTTON CLICK HANDLERS
 document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
