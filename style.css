@@ -117,16 +117,6 @@ input, select, textarea {
   background: #004095;
 }
 
-.camera-btn {
-  background: #198754;
-  margin-top: 15px;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-}
-
 /* IMAGE PREVIEW */
 .preview img {
   width: 90px;
@@ -206,11 +196,3 @@ button {
 .leaflet-popup {
   pointer-events: auto !important;
 }
-#cameraInput {
-  opacity: 0;
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  left: -9999px;
-}
-
