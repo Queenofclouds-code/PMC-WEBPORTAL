@@ -13,7 +13,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // =========================
 // COLLAPSE FILTER PANEL
 // =========================
-const filterPanel = document.querySelector(".filter-panel");
+const filterPanel = document.getElementById("leftPanel");
 const layout = document.querySelector(".complaints-layout");
 const toggleBtn = document.getElementById("collapseToggle");
 
@@ -27,7 +27,7 @@ toggleBtn.addEventListener("click", () => {
 });
 
 // =========================
-// MARKERS
+// MARKERS + CLUSTERS
 // =========================
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
@@ -41,7 +41,7 @@ function loadComplaints(filterType = "All") {
       markers.clearLayers();
       const grouped = {};
 
-      // Zoom to latest complaint
+      // Zoom to most recent
       if (data.complaints.length > 0) {
         let latest = data.complaints[0];
         map.flyTo([Number(latest.latitude), Number(latest.longitude)], 17);
@@ -50,12 +50,12 @@ function loadComplaints(filterType = "All") {
       // Group by coordinate
       data.complaints.forEach(c => {
         if (!c.latitude || !c.longitude) return;
-
         const key = `${c.latitude},${c.longitude}`;
         if (!grouped[key]) grouped[key] = [];
         grouped[key].push(c);
       });
 
+      // Create markers
       Object.keys(grouped).forEach(key => {
         let items = grouped[key];
         const [lat, lng] = key.split(",").map(Number);
@@ -63,9 +63,8 @@ function loadComplaints(filterType = "All") {
         if (filterType !== "All" && !items.some(c => c.complaint_type === filterType))
           return;
 
-        if (filterType !== "All") {
+        if (filterType !== "All")
           items = items.filter(c => c.complaint_type === filterType);
-        }
 
         let index = 0;
         const marker = L.marker([lat, lng]).bindPopup("");
@@ -81,16 +80,14 @@ function loadComplaints(filterType = "All") {
             <small>${index + 1} / ${items.length}</small><br><br>
           `;
 
-          if (d.image_url) {
+          if (d.image_url)
             html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
-          }
 
-          if (items.length > 1) {
+          if (items.length > 1)
             html += `
               <button id="prevBtn">⬅ Prev</button>
               <button id="nextBtn">Next ➡</button>
             `;
-          }
 
           marker.getPopup().setContent(html);
 
@@ -98,20 +95,19 @@ function loadComplaints(filterType = "All") {
             const next = document.getElementById("nextBtn");
             const prev = document.getElementById("prevBtn");
 
-            if (next) next.onclick = e => {
-              e.stopPropagation();
-              index = (index + 1) % items.length;
-              showPopup();
-            };
+            if (next)
+              next.onclick = e => {
+                e.stopPropagation();
+                index = (index + 1) % items.length;
+                showPopup();
+              };
 
-            if (prev) prev.onclick = e => {
-              e.stopPropagation();
-              index = (index - 1 + items.length) % items.length;
-              showPopup();
-            };
-
-            const popupEl = document.querySelector(".leaflet-popup");
-            if (popupEl) L.DomEvent.disableClickPropagation(popupEl);
+            if (prev)
+              prev.onclick = e => {
+                e.stopPropagation();
+                index = (index - 1 + items.length) % items.length;
+                showPopup();
+              };
           }, 150);
         }
 
