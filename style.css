@@ -144,10 +144,14 @@ input, select, textarea {
 }
 
 
-/* COLLAPSE BUTTON */
+.collapse-container {
+  position: relative;
+  width: 0; /* no width so it does not affect layout */
+}
+
 .collapse-btn {
   position: absolute;
-  right: -15px;
+  left: 200px; /* sits at right edge of panel */
   top: 50%;
   transform: translateY(-50%);
   background: #0057b7;
@@ -160,21 +164,11 @@ input, select, textarea {
   align-items: center;
   cursor: pointer;
   font-size: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   z-index: 9999;
 }
 
-/* COLLAPSED PANEL */
-.filter-panel.collapsed {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
-  border-right: none;
-}
-
-/* Arrow flips when collapsed */
-.filter-panel.collapsed .collapse-btn {
-  right: -20px;
+.filter-panel.collapsed + .collapse-container .collapse-btn {
+  left: 0; /* arrow moves to the left when panel is collapsed */
   transform: translateY(-50%) rotate(180deg);
 }
 
