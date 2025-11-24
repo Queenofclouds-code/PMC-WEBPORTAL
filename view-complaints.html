@@ -16,12 +16,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <style>
-    #map {
-      width: 100%;
-      height: calc(100vh - 140px);
-    }
-  </style>
 </head>
 
 <body>
@@ -37,14 +31,21 @@
 
 <div class="complaints-layout">
 
-  <!-- LEFT FILTER PANEL -->
-  <div class="filter-panel">
-    <button class="filter-btn active" data-type="All">All</button>
-    <button class="filter-btn" data-type="Garbage">Garbage</button>
-    <button class="filter-btn" data-type="Street Light">Street Light</button>
-    <button class="filter-btn" data-type="Water Supply">Water Supply</button>
-    <button class="filter-btn" data-type="Sewage">Sewage</button>
-    <button class="filter-btn" data-type="Other">Other</button>
+  <div class="filter-wrapper">
+
+      <!-- COLLAPSE BUTTON OUTSIDE -->
+      <button id="collapseBtn" class="collapse-btn">&lt;</button>
+
+      <!-- LEFT PANEL -->
+      <div id="filterPanel" class="filter-panel">
+          <button class="filter-btn active" data-type="All">All</button>
+          <button class="filter-btn" data-type="Garbage">Garbage</button>
+          <button class="filter-btn" data-type="Street Light">Street Light</button>
+          <button class="filter-btn" data-type="Water Supply">Water Supply</button>
+          <button class="filter-btn" data-type="Sewage">Sewage</button>
+          <button class="filter-btn" data-type="Other">Other</button>
+      </div>
+
   </div>
 
   <!-- MAP -->
