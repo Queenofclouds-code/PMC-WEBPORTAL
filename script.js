@@ -42,6 +42,7 @@ window.onload = async () => {
 const fileInput = document.getElementById("files");
 const cameraInput = document.getElementById("cameraInput");
 const cameraBtn = document.getElementById("openCameraBtn");
+const preview = document.getElementById("preview");
 
 // =======================
 // DISABLE CAMERA IF FILE SELECTED
@@ -51,8 +52,10 @@ fileInput.addEventListener("change", async () => {
     cameraBtn.disabled = true;
     cameraBtn.style.opacity = "0.5";
     cameraInput.value = "";
+
     console.log("📁 File selected → Camera disabled");
 
+    showPreview(fileInput.files);
     await getLiveLocation("File Selected");
   } else {
     cameraBtn.disabled = false;
@@ -68,7 +71,11 @@ cameraInput.addEventListener("change", async () => {
     fileInput.disabled = true;
     fileInput.style.opacity = "0.5";
     fileInput.value = "";
+
     console.log("📸 Camera used → File disabled");
+
+    // ❌ DO NOT PREVIEW CAMERA IMAGE (Fix freeze)
+    preview.innerHTML = "<p>📸 Camera image attached ✔</p>";
 
     await getLiveLocation("Camera Capture");
   }
@@ -82,12 +89,10 @@ cameraBtn.addEventListener("click", () => {
 });
 
 // =======================
-// IMAGE PREVIEW
+// IMAGE PREVIEW (ONLY FOR FILE UPLOAD)
 // =======================
 function showPreview(files) {
-  const preview = document.getElementById("preview");
   preview.innerHTML = "";
-
   [...files].forEach(file => {
     const img = document.createElement("img");
     img.src = URL.createObjectURL(file);
@@ -97,9 +102,6 @@ function showPreview(files) {
     preview.appendChild(img);
   });
 }
-
-fileInput.addEventListener("change", () => showPreview(fileInput.files));
-cameraInput.addEventListener("change", () => showPreview(cameraInput.files));
 
 // =======================
 // FORM SUBMIT HANDLER
@@ -144,7 +146,7 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
   formData.append("latitude", latitude);
   formData.append("longitude", longitude);
 
-  // Append files
+  // Files
   [...fileInput.files].forEach(f => formData.append("files[]", f));
   [...cameraInput.files].forEach(f => formData.append("files[]", f));
 
@@ -167,7 +169,7 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
     cameraBtn.style.opacity = "1";
     fileInput.value = "";
     cameraInput.value = "";
-    document.getElementById("preview").innerHTML = "";
+    preview.innerHTML = "";
 
   } catch (err) {
     console.error("❌ Submit Error:", err);
