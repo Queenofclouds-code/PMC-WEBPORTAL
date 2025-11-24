@@ -206,3 +206,90 @@ button {
 .leaflet-popup {
   pointer-events: auto !important;
 }
+/* ================================
+   MOBILE RESPONSIVE FIXES
+   ================================ */
+@media (max-width: 768px) {
+
+  /* Make header smaller on mobile */
+  .gov-header {
+    padding: 18px 8px;
+  }
+
+  .gov-header h1 {
+    font-size: 22px;
+  }
+
+  /* Navigation becomes centered and spaced */
+  nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  nav a {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  /* Form card full width */
+  .form-card {
+    max-width: 95%;
+    margin: 15px auto;
+    padding: 18px;
+    border-radius: 10px;
+  }
+
+  label {
+    font-size: 15px;
+  }
+
+  input, select, textarea {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  /* Camera button full width */
+  .camera-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Preview images smaller for mobile */
+  .preview img {
+    width: 70px;
+  }
+
+  /* View Complaints layout: stack vertically */
+  .complaints-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  /* Filter panel full width */
+  .filter-panel {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .filter-panel .filter-btn {
+    flex-shrink: 0;
+    width: auto;
+    padding: 8px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* Map full width below filters */
+  #map {
+    height: 70vh;
+    width: 100%;
+  }
+}
+
