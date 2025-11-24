@@ -131,6 +131,7 @@ input, select, textarea {
 /* LEFT FILTER PANEL */
 .filter-panel {
   position: relative;
+  z-index: 10;        /* <-- add this */
   width: 200px;
   background: rgba(255, 255, 255, 0.95);
   padding: 20px 10px;
@@ -141,6 +142,7 @@ input, select, textarea {
   gap: 10px;
   height: 100%;
 }
+
 
 /* COLLAPSE BUTTON */
 .collapse-btn {
