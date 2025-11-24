@@ -1,8 +1,25 @@
-// =====================================================
-// FINAL LEAFLET MAP + CLUSTERS + AUTO-ZOOM TO LATEST
-// =====================================================
+// ============================================
+// COLLAPSIBLE PANEL LOGIC
+// ============================================
+const panel = document.getElementById("filterPanel");
+const collapseBtn = document.getElementById("collapseBtn");
 
-// Initialize Map
+collapseBtn.addEventListener("click", () => {
+
+    panel.classList.toggle("collapsed");
+    collapseBtn.classList.toggle("panel-collapsed");
+
+    collapseBtn.innerHTML = panel.classList.contains("collapsed") ? ">" : "<";
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 400);
+});
+
+// ============================================
+// LEAFLET MAP + MARKER CLUSTER
+// ============================================
+
 let map = L.map("map").setView([18.5204, 73.8567], 12);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -10,11 +27,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
-// Marker Cluster Group
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// Fetch Complaints and Load on Map
+// ============================================
+// LOAD COMPLAINTS
+// ============================================
+
 function loadComplaints(filterType = "All") {
     fetch("https://gist.aeronica.in/portal/api/complaints")
         .then(res => res.json())
@@ -23,13 +42,11 @@ function loadComplaints(filterType = "All") {
             markers.clearLayers();
             const grouped = {};
 
-            // ⭐ ALWAYS ZOOM TO LATEST (newest entry = index 0)
             if (data.complaints.length > 0) {
                 const latest = data.complaints[0];
                 map.flyTo([latest.latitude, latest.longitude], 17, { duration: 1.2 });
             }
 
-            // Group complaints by coordinate
             data.complaints.forEach(c => {
                 if (!c.latitude || !c.longitude) return;
 
@@ -38,21 +55,18 @@ function loadComplaints(filterType = "All") {
                 grouped[key].push(c);
             });
 
-            // Create markers
             Object.keys(grouped).forEach(key => {
                 let items = grouped[key];
                 const [lat, lng] = key.split(",").map(Number);
 
-                // Filter type
-                if (filterType !== "All" && !items.some(c => c.complaint_type === filterType)) return;
+                if (filterType !== "All" &&
+                    !items.some(c => c.complaint_type === filterType)) return;
 
                 if (filterType !== "All") {
                     items = items.filter(c => c.complaint_type === filterType);
                 }
 
                 let index = 0;
-
-                // Create Marker
                 const marker = L.marker([lat, lng]).bindPopup("");
 
                 function showPopup() {
@@ -67,7 +81,8 @@ function loadComplaints(filterType = "All") {
                     `;
 
                     if (d.image_url) {
-                        html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
+                        html += `<img src="${d.image_url}" 
+                        style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
                     }
 
                     if (items.length > 1) {
@@ -94,24 +109,19 @@ function loadComplaints(filterType = "All") {
                             index = (index - 1 + items.length) % items.length;
                             showPopup();
                         };
-
-                        const popupEl = document.querySelector(".leaflet-popup");
-                        if (popupEl) L.DomEvent.disableClickPropagation(popupEl);
-
                     }, 150);
                 }
 
                 marker.on("click", showPopup);
-
                 markers.addLayer(marker);
             });
         });
 }
 
-// Initial Load
+// INITIAL LOAD
 loadComplaints();
 
-// Filter Buttons
+// FILTER BUTTONS
 document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
