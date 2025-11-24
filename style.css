@@ -206,3 +206,11 @@ button {
 .leaflet-popup {
   pointer-events: auto !important;
 }
+#cameraInput {
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  left: -9999px;
+}
+
