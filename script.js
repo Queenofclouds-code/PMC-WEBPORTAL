@@ -1,5 +1,5 @@
 // =======================
-// GET LIVE LOCATION FUNCTION
+// GET LIVE LOCATION
 // =======================
 function getLiveLocation(source = "Unknown") {
   return new Promise((resolve, reject) => {
@@ -30,61 +30,68 @@ function getLiveLocation(source = "Unknown") {
 }
 
 // =======================
-// AUTO-FETCH LOCATION ON PAGE LOAD
+// AUTO GET LOCATION
 // =======================
 window.onload = async () => {
   await getLiveLocation("Page Load");
 };
 
 // =======================
-// VARIABLES
+// DOM ELEMENTS
 // =======================
 const fileInput = document.getElementById("files");
 const cameraInput = document.getElementById("cameraInput");
 const cameraBtn = document.getElementById("openCameraBtn");
 const preview = document.getElementById("preview");
 
-// =======================
-// FILE SELECTED
-// =======================
-fileInput.addEventListener("change", async () => {
-  if (fileInput.files.length > 0) {
-    cameraBtn.disabled = true;
-    cameraBtn.style.opacity = "0.5";
-    cameraInput.value = "";
-
-    showPreview(fileInput.files);
-    await getLiveLocation("File Selected");
-  } else {
-    cameraBtn.disabled = false;
-    cameraBtn.style.opacity = "1";
-  }
-});
+// Make camera input mobile-compatible
+cameraInput.style.opacity = "0";
+cameraInput.style.position = "absolute";
+cameraInput.style.left = "-9999px";
 
 // =======================
-// CAMERA CAPTURED
+// IMAGE COMPRESSION FUNCTION
 // =======================
-cameraInput.addEventListener("change", async () => {
-  if (cameraInput.files.length > 0) {
-    fileInput.disabled = true;
-    fileInput.style.opacity = "0.5";
-    fileInput.value = "";
+function compressImage(file, quality = 0.6) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
 
-    preview.innerHTML = "<p>📸 Camera image attached ✔</p>";
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
-    await getLiveLocation("Camera Capture");
-  }
-});
+        const MAX_WIDTH = 1080;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > MAX_WIDTH) {
+          height = (MAX_WIDTH / width) * height;
+          width = MAX_WIDTH;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            resolve(new File([blob], file.name, { type: "image/jpeg" }));
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 // =======================
-// OPEN CAMERA
-// =======================
-cameraBtn.addEventListener("click", () => {
-  cameraInput.click();
-});
-
-// =======================
-// PREVIEW FOR FILES
+// IMAGE PREVIEW
 // =======================
 function showPreview(files) {
   preview.innerHTML = "";
@@ -97,6 +104,35 @@ function showPreview(files) {
     preview.appendChild(img);
   });
 }
+
+// =======================
+// FILE INPUT (Gallery)
+// =======================
+fileInput.addEventListener("change", async () => {
+  if (fileInput.files.length > 0) {
+    cameraInput.value = "";
+    showPreview(fileInput.files);
+    await getLiveLocation("File Selected");
+  }
+});
+
+// =======================
+// CAMERA CAPTURE
+// =======================
+cameraInput.addEventListener("change", async () => {
+  if (cameraInput.files.length > 0) {
+    fileInput.value = "";
+    preview.innerHTML = "<p>📸 Camera image attached ✔</p>";
+    await getLiveLocation("Camera Capture");
+  }
+});
+
+// =======================
+// OPEN CAMERA BUTTON
+// =======================
+cameraBtn.addEventListener("click", () => {
+  cameraInput.click(); // now works on all mobiles
+});
 
 // =======================
 // FORM SUBMIT
@@ -119,6 +155,7 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
   const latitude = document.getElementById("latitude").value;
   const longitude = document.getElementById("longitude").value;
 
+  // Basic validation
   if (!/^[A-Za-z ]{3,}$/.test(fullname)) {
     alert("Enter a valid full name");
     return;
@@ -138,9 +175,23 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
   formData.append("latitude", latitude);
   formData.append("longitude", longitude);
 
-  [...fileInput.files].forEach(f => formData.append("files[]", f));
-  [...cameraInput.files].forEach(f => formData.append("files[]", f));
+  // ====== COMPRESS FILES BEFORE UPLOAD ======
+  async function appendCompressed(files) {
+    for (let f of files) {
+      const compressed = await compressImage(f);
+      formData.append("files[]", compressed);
+    }
+  }
 
+  if (fileInput.files.length > 0) {
+    await appendCompressed(fileInput.files);
+  }
+
+  if (cameraInput.files.length > 0) {
+    await appendCompressed(cameraInput.files);
+  }
+
+  // Submit to backend
   try {
     const res = await fetch("/portal/api/complaints", {
       method: "POST",
@@ -151,10 +202,9 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
 
     alert("✔ Complaint submitted successfully!");
 
-    // REFRESH FIX FOR MOBILE BROWSERS
     setTimeout(() => {
       location.reload();
-    }, 800);
+    }, 700);
 
   } catch (err) {
     console.error("Submit Error:", err);
