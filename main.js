@@ -1,5 +1,5 @@
 // =====================================================
-// FINAL LEAFLET MAP + CLUSTERS + FILTER + AUTO-ZOOM (DEFAULT MARKERS)
+// FINAL LEAFLET MAP + CLUSTERS + AUTO-ZOOM TO LATEST
 // =====================================================
 
 // Initialize Map
@@ -10,121 +10,112 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
-
-
-
-// Initialize Marker Cluster Group
+// Marker Cluster Group
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// Fetch & Load Complaints
+// Fetch Complaints and Load on Map
 function loadComplaints(filterType = "All") {
-  fetch("https://gist.aeronica.in/portal/api/complaints")   // ✅ LIVE SERVER
-    .then(res => res.json())
-    .then(data => {
+    fetch("https://gist.aeronica.in/portal/api/complaints")
+        .then(res => res.json())
+        .then(data => {
 
-      markers.clearLayers();
-      const grouped = {};
+            markers.clearLayers();
+            const grouped = {};
 
-      // ⭐ Find most recent complaint
-      let latest = null;
-      if (data.complaints.length > 0) {
-        latest = data.complaints[data.complaints.length - 1];
-        map.flyTo([Number(latest.latitude),Number(latest.longitude)], 17);
-      }
+            // ⭐ ALWAYS ZOOM TO LATEST (newest entry = index 0)
+            if (data.complaints.length > 0) {
+                const latest = data.complaints[0];
+                map.flyTo([latest.latitude, latest.longitude], 17, { duration: 1.2 });
+            }
 
-      // Group complaints by coordinates
-      data.complaints.forEach(c => {
-        if (!c.latitude || !c.longitude) return;
+            // Group complaints by coordinate
+            data.complaints.forEach(c => {
+                if (!c.latitude || !c.longitude) return;
 
-        const key = `${c.latitude},${c.longitude}`;
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(c);
-      });
+                const key = `${c.latitude},${c.longitude}`;
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(c);
+            });
 
-      // Create markers for each location
-      Object.keys(grouped).forEach(key => {
-        let items = grouped[key];
-        const [lat, lng] = key.split(",").map(v => Number(v.trim()));
+            // Create markers
+            Object.keys(grouped).forEach(key => {
+                let items = grouped[key];
+                const [lat, lng] = key.split(",").map(Number);
 
-        // Show marker only if ANY record matches filter
-        if (filterType !== "All" && !items.some(c => c.complaint_type === filterType)) return;
+                // Filter type
+                if (filterType !== "All" && !items.some(c => c.complaint_type === filterType)) return;
 
-        // Filter popup items based on filter
-        if (filterType !== "All") {
-          items = items.filter(c => c.complaint_type === filterType);
-        }
+                if (filterType !== "All") {
+                    items = items.filter(c => c.complaint_type === filterType);
+                }
 
-        let index = 0;
+                let index = 0;
 
-        // 🔹 DEFAULT MARKER (no colored circles)
-        const marker = L.marker([lat, lng]).bindPopup("");
+                // Create Marker
+                const marker = L.marker([lat, lng]).bindPopup("");
 
-        // Function to update popup content
-        function showPopup() {
-          const d = items[index];
+                function showPopup() {
+                    const d = items[index];
 
-          let html = `
-            <b>${d.complaint_type}</b><br>
-            <b>Urgency:</b> ${d.urgency}<br>
-            <b>Description:</b> ${d.description}<br>
-            <b>Reported By:</b> ${d.fullname}<br>
-            <small>${index + 1} / ${items.length}</small><br><br>
-          `;
+                    let html = `
+                        <b>${d.complaint_type}</b><br>
+                        <b>Urgency:</b> ${d.urgency}<br>
+                        <b>Description:</b> ${d.description}<br>
+                        <b>Reported By:</b> ${d.fullname}<br>
+                        <small>${index + 1} / ${items.length}</small><br><br>
+                    `;
 
-          if (d.image_url) {
-            html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
-          }
+                    if (d.image_url) {
+                        html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
+                    }
 
+                    if (items.length > 1) {
+                        html += `
+                            <button id="prevBtn">⬅ Prev</button>
+                            <button id="nextBtn">Next ➡</button>
+                        `;
+                    }
 
-          if (items.length > 1) {
-            html += `
-              <button id="prevBtn">⬅ Prev</button>
-              <button id="nextBtn">Next ➡</button>
-            `;
-          }
+                    marker.getPopup().setContent(html);
 
-          marker.getPopup().setContent(html);
+                    setTimeout(() => {
+                        const next = document.getElementById("nextBtn");
+                        const prev = document.getElementById("prevBtn");
 
-          setTimeout(() => {
-            const next = document.getElementById("nextBtn");
-            const prev = document.getElementById("prevBtn");
+                        if (next) next.onclick = (e) => {
+                            e.stopPropagation();
+                            index = (index + 1) % items.length;
+                            showPopup();
+                        };
 
-            if (next) next.onclick = (e) => {
-              e.stopPropagation();
-              index = (index + 1) % items.length;
-              showPopup();
-            };
+                        if (prev) prev.onclick = (e) => {
+                            e.stopPropagation();
+                            index = (index - 1 + items.length) % items.length;
+                            showPopup();
+                        };
 
-            if (prev) prev.onclick = (e) => {
-              e.stopPropagation();
-              index = (index - 1 + items.length) % items.length;
-              showPopup();
-            };
+                        const popupEl = document.querySelector(".leaflet-popup");
+                        if (popupEl) L.DomEvent.disableClickPropagation(popupEl);
 
-            const popupEl = document.querySelector(".leaflet-popup");
-            if (popupEl) L.DomEvent.disableClickPropagation(popupEl);
+                    }, 150);
+                }
 
-          }, 150);
-        }
+                marker.on("click", showPopup);
 
-        // Click Handler to Open Popup
-        marker.on("click", showPopup);
-
-        // Add Marker to Cluster Layer
-        markers.addLayer(marker);
-      });
-    });
+                markers.addLayer(marker);
+            });
+        });
 }
 
-// Load Initial Data
+// Initial Load
 loadComplaints();
 
 // Filter Buttons
 document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    loadComplaints(btn.dataset.type);
-  });
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        loadComplaints(btn.dataset.type);
+    });
 });
