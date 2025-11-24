@@ -1,4 +1,3 @@
-
 // =======================
 // GET LIVE LOCATION
 // =======================
@@ -17,11 +16,9 @@ function getLiveLocation(source = "Unknown") {
         document.getElementById("latitude").value = lat;
         document.getElementById("longitude").value = lng;
 
-        console.log(`📍 LIVE GPS (${source}):`, lat, lng);
         resolve({ lat, lng });
       },
       (err) => {
-        console.warn("GPS Error:", err);
         alert("⚠ Please enable location permission.");
         reject(err);
       },
@@ -45,21 +42,17 @@ const cameraInput = document.getElementById("cameraInput");
 const cameraBtn = document.getElementById("openCameraBtn");
 const preview = document.getElementById("preview");
 
-// ---- Ensure input is not display:none (browser blocks camera) ----
-if (cameraInput) {
-  cameraInput.style.opacity = "0";
-  cameraInput.style.position = "absolute";
-  cameraInput.style.left = "-9999px";
-}
+// Fix: cameraInput must not be display:none
+cameraInput.style.opacity = "0";
+cameraInput.style.position = "absolute";
+cameraInput.style.left = "-9999px";
 
 // =======================
-// Safer compress-to-target function (~3MB target)
+// COMPRESS TO ~3MB
 // =======================
 async function compressImageToTarget(file, targetBytes = 3 * 1024 * 1024) {
-  // If file already smaller than target, return original
   if (file.size <= targetBytes) return file;
 
-  // Read as data URL (small memory footprint compared to canvas ops)
   const dataUrl = await new Promise((res, rej) => {
     const r = new FileReader();
     r.onload = () => res(r.result);
@@ -67,7 +60,6 @@ async function compressImageToTarget(file, targetBytes = 3 * 1024 * 1024) {
     r.readAsDataURL(file);
   });
 
-  // Create image element
   const img = await new Promise((res, rej) => {
     const i = new Image();
     i.onload = () => res(i);
@@ -75,77 +67,53 @@ async function compressImageToTarget(file, targetBytes = 3 * 1024 * 1024) {
     i.src = dataUrl;
   });
 
-  // Start with conservative downscale to reduce memory usage (max width)
-  let maxWidth = 1600; // start here for good quality but safe memory
-  let scale = Math.min(1, maxWidth / img.width);
-  let width = Math.round(img.width * scale);
-  let height = Math.round(img.height * scale);
+  let width = Math.min(1600, img.width);
+  let height = img.height * (width / img.width);
 
-  // Create canvas and draw
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
-  // Iteratively reduce quality and size until under targetBytes or limits reached
   let quality = 0.85;
-  let blob = null;
+  let blob;
 
-  for (let attempt = 0; attempt < 8; attempt++) {
+  for (let i = 0; i < 8; i++) {
     canvas.width = width;
     canvas.height = height;
+
     ctx.clearRect(0, 0, width, height);
     ctx.drawImage(img, 0, 0, width, height);
 
-    // await toBlob
-    blob = await new Promise((resolve) => {
-      canvas.toBlob(resolve, "image/jpeg", quality);
-    });
+    blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", quality)
+    );
 
-    if (!blob) break;
+    if (blob && blob.size <= targetBytes) break;
 
-    if (blob.size <= targetBytes) {
-      // Good: return compressed file
-      return new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
-    }
-
-    // If too big, reduce quality first
-    if (quality > 0.5) {
-      quality -= 0.12; // reduce quality step
-    } else {
-      // reduce dimensions if quality already low
-      width = Math.round(width * 0.8);
-      height = Math.round(height * 0.8);
-      // avoid extremely small sizes
-      if (width < 400 || height < 400) {
-        // last resort: return current blob even if larger than target
-        return new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
-      }
+    if (quality > 0.5) quality -= 0.12;
+    else {
+      width *= 0.8;
+      height *= 0.8;
     }
   }
 
-  // fallback - return last produced blob as file
-  if (blob) return new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), { type: "image/jpeg" });
-
-  // If compression failed, return original file
-  return file;
+  return new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+    type: "image/jpeg",
+  });
 }
 
 // =======================
-// IMAGE PREVIEW (thumbnail only)
+// SAFE PREVIEW (ONLY small gallery images)
 // =======================
 function showPreview(files) {
   preview.innerHTML = "";
-  [...files].forEach(file => {
+  [...files].forEach((file) => {
     const img = document.createElement("img");
-    // Use small thumbnail by setting object URL and CSS width - browser will handle
     img.src = URL.createObjectURL(file);
     img.style.width = "90px";
-    img.style.height = "auto";
-    img.style.objectFit = "cover";
-    img.style.margin = "5px";
     img.style.borderRadius = "8px";
+    img.style.margin = "5px";
     preview.appendChild(img);
-    // Revoke object URL later to free memory
-    setTimeout(() => { URL.revokeObjectURL(img.src); }, 60000);
+    setTimeout(() => URL.revokeObjectURL(img.src), 30000);
   });
 }
 
@@ -153,23 +121,28 @@ function showPreview(files) {
 // FILE INPUT (Gallery)
 // =======================
 fileInput.addEventListener("change", async () => {
-  if (fileInput.files.length > 0) {
-    cameraInput.value = "";
-    // For safety, only show previews (no heavy canvas ops)
+  cameraInput.value = "";
+
+  if (fileInput.files[0].size < 8 * 1024 * 1024) {
     showPreview(fileInput.files);
-    await getLiveLocation("File Selected");
+  } else {
+    preview.innerHTML =
+      "<p>🖼 Large file selected — preview disabled for safety</p>";
   }
+
+  await getLiveLocation("Gallery Select");
 });
 
 // =======================
 // CAMERA CAPTURE
 // =======================
 cameraInput.addEventListener("change", async () => {
-  if (cameraInput.files.length > 0) {
-    fileInput.value = "";
-    preview.innerHTML = "<p>📸 Camera image attached ✔</p>";
-    await getLiveLocation("Camera Capture");
-  }
+  fileInput.value = "";
+
+  preview.innerHTML =
+    "<p>📸 Camera image attached ✔ (preview disabled for safety)</p>";
+
+  await getLiveLocation("Camera Capture");
 });
 
 // =======================
@@ -182,82 +155,55 @@ cameraBtn.addEventListener("click", () => {
 // =======================
 // FORM SUBMIT
 // =======================
-document.getElementById("complaintForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document
+  .getElementById("complaintForm")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  try {
-    await getLiveLocation("Submit Button");
-  } catch (err) {
-    alert("⚠ Could not fetch live location.");
-    return;
-  }
+    await getLiveLocation("Submit");
 
-  const fullname = document.getElementById("fullname").value;
-  const phone = document.getElementById("phone").value;
-  const complaint_type = document.getElementById("complaintType").value;
-  const description = document.getElementById("description").value;
-  const urgency = document.getElementById("urgency").value;
-  const latitude = document.getElementById("latitude").value;
-  const longitude = document.getElementById("longitude").value;
+    const formData = new FormData();
 
-  // Basic validation
-  if (!/^[A-Za-z ]{3,}$/.test(fullname)) {
-    alert("Enter a valid full name");
-    return;
-  }
+    formData.append("fullname", fullname.value);
+    formData.append("phone", phone.value);
+    formData.append("complaint_type", complaintType.value);
+    formData.append("description", description.value);
+    formData.append("urgency", urgency.value);
+    formData.append("latitude", latitude.value);
+    formData.append("longitude", longitude.value);
 
-  if (!/^[0-9]{10}$/.test(phone.trim())) {
-    alert("Enter a valid 10-digit phone number");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("fullname", fullname);
-  formData.append("phone", phone);
-  formData.append("complaint_type", complaint_type);
-  formData.append("description", description);
-  formData.append("urgency", urgency);
-  formData.append("latitude", latitude);
-  formData.append("longitude", longitude);
-
-  // Append files: compress to ~3MB target for mobile safety
-  async function appendFilesWithCompression(files) {
-    for (let f of files) {
-      try {
-        const compressed = await compressImageToTarget(f, 3 * 1024 * 1024);
-        formData.append("files[]", compressed);
-      } catch (err) {
-        // if compression fails, append original (fallback)
-        formData.append("files[]", f);
+    async function addFiles(files) {
+      for (let f of files) {
+        const c = await compressImageToTarget(f);
+        formData.append("files[]", c);
       }
     }
-  }
 
-  if (fileInput.files.length > 0) {
-    await appendFilesWithCompression(fileInput.files);
-  }
+    if (fileInput.files.length > 0) await addFiles(fileInput.files);
+    if (cameraInput.files.length > 0) await addFiles(cameraInput.files);
 
-  if (cameraInput.files.length > 0) {
-    await appendFilesWithCompression(cameraInput.files);
-  }
+    try {
+      const res = await fetch("/portal/api/complaints", {
+        method: "POST",
+        body: formData,
+      });
 
-  // Submit to backend
-  try {
-    const res = await fetch("/portal/api/complaints", {
-      method: "POST",
-      body: formData
-    });
+      await res.json();
 
-    await res.json();
+      alert("✔ Complaint submitted successfully!");
 
-    alert("✔ Complaint submitted successfully!");
+      // ======================
+      // FINAL FIX FOR ANDROID
+      // ======================
+      document.getElementById("complaintForm").reset();
+      preview.innerHTML = "";
+      latitude.value = "";
+      longitude.value = "";
 
-    setTimeout(() => {
-      location.reload();
-    }, 800);
-
-  } catch (err) {
-    console.error("Submit Error:", err);
-    alert("❌ Failed to submit complaint.");
-  }
-});
+      setTimeout(() => {
+        window.location.href = window.location.href;
+      }, 400);
+    } catch (err) {
+      alert("❌ Submission failed");
+    }
+  });
