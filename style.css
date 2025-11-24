@@ -196,6 +196,7 @@ button {
 .leaflet-popup {
   pointer-events: auto !important;
 }
+
 /* COLLAPSE BUTTON */
 .collapse-btn {
   position: absolute;
@@ -234,16 +235,3 @@ button {
 .complaints-layout.collapsed-map #map {
   width: 100%;
 }
-.filter-panel {
-  position: relative;   /* ← ADD THIS */
-  width: 200px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 20px 10px;
-  border-right: 2px solid #d3dce6;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  height: 100%;
-}
-
