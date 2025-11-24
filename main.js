@@ -1,13 +1,13 @@
 // =====================================================
-// FINAL LEAFLET MAP + CLUSTERS + FILTER + AUTO-ZOOM (DEFAULT MARKERS)
+// FINAL LEAFLET MAP + CLUSTERS + FILTER + AUTO-ZOOM
 // =====================================================
 
 // Initialize Map
 let map = L.map("map").setView([18.5204, 73.8567], 12);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 20,
-    attribution: "© OpenStreetMap Contributors"
+  maxZoom: 20,
+  attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
 // =========================
@@ -21,44 +21,33 @@ toggleBtn.addEventListener("click", () => {
   filterPanel.classList.toggle("collapsed");
   layout.classList.toggle("collapsed-map");
 
-  // Flip arrow direction
-  if (filterPanel.classList.contains("collapsed")) {
-    toggleBtn.textContent = "▶";
-  } else {
-    toggleBtn.textContent = "◀";
-  }
+  toggleBtn.textContent = filterPanel.classList.contains("collapsed") ? "▶" : "◀";
 
-  // Resize map properly
-  setTimeout(() => {
-    map.invalidateSize();
-  }, 300);
+  setTimeout(() => map.invalidateSize(), 300);
 });
 
-
-
-
-
-// Initialize Marker Cluster Group
+// =========================
+// MARKERS
+// =========================
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// Fetch & Load Complaints
+// Load complaints
 function loadComplaints(filterType = "All") {
-  fetch("https://gist.aeronica.in/portal/api/complaints")   // ✅ LIVE SERVER
+  fetch("https://gist.aeronica.in/portal/api/complaints")
     .then(res => res.json())
     .then(data => {
 
       markers.clearLayers();
       const grouped = {};
 
-      // ⭐ Find most recent complaint
-      let latest = null;
+      // Zoom to latest complaint
       if (data.complaints.length > 0) {
-        latest = data.complaints[0];
-        map.flyTo([Number(latest.latitude),Number(latest.longitude)], 17);
+        let latest = data.complaints[0];
+        map.flyTo([Number(latest.latitude), Number(latest.longitude)], 17);
       }
 
-      // Group complaints by coordinates
+      // Group by coordinate
       data.complaints.forEach(c => {
         if (!c.latitude || !c.longitude) return;
 
@@ -67,25 +56,20 @@ function loadComplaints(filterType = "All") {
         grouped[key].push(c);
       });
 
-      // Create markers for each location
       Object.keys(grouped).forEach(key => {
         let items = grouped[key];
-        const [lat, lng] = key.split(",").map(v => Number(v.trim()));
+        const [lat, lng] = key.split(",").map(Number);
 
-        // Show marker only if ANY record matches filter
-        if (filterType !== "All" && !items.some(c => c.complaint_type === filterType)) return;
+        if (filterType !== "All" && !items.some(c => c.complaint_type === filterType))
+          return;
 
-        // Filter popup items based on filter
         if (filterType !== "All") {
           items = items.filter(c => c.complaint_type === filterType);
         }
 
         let index = 0;
-
-        // 🔹 DEFAULT MARKER (no colored circles)
         const marker = L.marker([lat, lng]).bindPopup("");
 
-        // Function to update popup content
         function showPopup() {
           const d = items[index];
 
@@ -101,7 +85,6 @@ function loadComplaints(filterType = "All") {
             html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
           }
 
-
           if (items.length > 1) {
             html += `
               <button id="prevBtn">⬅ Prev</button>
@@ -115,13 +98,13 @@ function loadComplaints(filterType = "All") {
             const next = document.getElementById("nextBtn");
             const prev = document.getElementById("prevBtn");
 
-            if (next) next.onclick = (e) => {
+            if (next) next.onclick = e => {
               e.stopPropagation();
               index = (index + 1) % items.length;
               showPopup();
             };
 
-            if (prev) prev.onclick = (e) => {
+            if (prev) prev.onclick = e => {
               e.stopPropagation();
               index = (index - 1 + items.length) % items.length;
               showPopup();
@@ -129,23 +112,18 @@ function loadComplaints(filterType = "All") {
 
             const popupEl = document.querySelector(".leaflet-popup");
             if (popupEl) L.DomEvent.disableClickPropagation(popupEl);
-
           }, 150);
         }
 
-        // Click Handler to Open Popup
         marker.on("click", showPopup);
-
-        // Add Marker to Cluster Layer
         markers.addLayer(marker);
       });
     });
 }
 
-// Load Initial Data
 loadComplaints();
 
-// Filter Buttons
+// FILTER BUTTONS
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
