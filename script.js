@@ -44,51 +44,10 @@ const cameraInput = document.getElementById("cameraInput");
 const cameraBtn = document.getElementById("openCameraBtn");
 const preview = document.getElementById("preview");
 
-// Make camera input mobile-compatible
+// ---- FIX: Do NOT use display:none ----
 cameraInput.style.opacity = "0";
 cameraInput.style.position = "absolute";
 cameraInput.style.left = "-9999px";
-
-// =======================
-// IMAGE COMPRESSION FUNCTION
-// =======================
-function compressImage(file, quality = 0.6) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target.result;
-
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        const MAX_WIDTH = 1080;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > MAX_WIDTH) {
-          height = (MAX_WIDTH / width) * height;
-          width = MAX_WIDTH;
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-
-        ctx.drawImage(img, 0, 0, width, height);
-
-        canvas.toBlob(
-          (blob) => {
-            resolve(new File([blob], file.name, { type: "image/jpeg" }));
-          },
-          "image/jpeg",
-          quality
-        );
-      };
-    };
-    reader.readAsDataURL(file);
-  });
-}
 
 // =======================
 // IMAGE PREVIEW
@@ -131,7 +90,7 @@ cameraInput.addEventListener("change", async () => {
 // OPEN CAMERA BUTTON
 // =======================
 cameraBtn.addEventListener("click", () => {
-  cameraInput.click(); // now works on all mobiles
+  cameraInput.click(); 
 });
 
 // =======================
@@ -175,23 +134,15 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
   formData.append("latitude", latitude);
   formData.append("longitude", longitude);
 
-  // ====== COMPRESS FILES BEFORE UPLOAD ======
-  async function appendCompressed(files) {
-    for (let f of files) {
-      const compressed = await compressImage(f);
-      formData.append("files[]", compressed);
-    }
-  }
-
+  // ---- FIX: NO COMPRESSION ----
   if (fileInput.files.length > 0) {
-    await appendCompressed(fileInput.files);
+    [...fileInput.files].forEach(f => formData.append("files[]", f));
   }
 
   if (cameraInput.files.length > 0) {
-    await appendCompressed(cameraInput.files);
+    [...cameraInput.files].forEach(f => formData.append("files[]", f));
   }
 
-  // Submit to backend
   try {
     const res = await fetch("/portal/api/complaints", {
       method: "POST",
