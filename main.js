@@ -1,23 +1,8 @@
-// ============================================
-// COLLAPSIBLE SPLITTER ( | < | )
-// ============================================
-const panel = document.getElementById("filterPanel");
-const splitBtn = document.getElementById("collapseBtn");
+// =====================================================
+// FINAL LEAFLET MAP + CLUSTERS + FILTER + AUTO-ZOOM (DEFAULT MARKERS)
+// =====================================================
 
-splitBtn.addEventListener("click", () => {
-
-    panel.classList.toggle("collapsed");
-    splitBtn.classList.toggle("collapsed");
-
-    splitBtn.innerHTML = panel.classList.contains("collapsed") ? ">" : "<";
-
-    setTimeout(() => map.invalidateSize(), 300);
-});
-
-// ============================================
-// LEAFLET MAP + MARKER CLUSTER
-// ============================================
-
+// Initialize Map
 let map = L.map("map").setView([18.5204, 73.8567], 12);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -25,105 +10,121 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
+
+
+
+// Initialize Marker Cluster Group
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// ============================================
-// LOAD COMPLAINTS
-// ============================================
-
+// Fetch & Load Complaints
 function loadComplaints(filterType = "All") {
-    fetch("https://gist.aeronica.in/portal/api/complaints")
-        .then(res => res.json())
-        .then(data => {
+  fetch("https://gist.aeronica.in/portal/api/complaints")   // ✅ LIVE SERVER
+    .then(res => res.json())
+    .then(data => {
 
-            markers.clearLayers();
-            const grouped = {};
+      markers.clearLayers();
+      const grouped = {};
 
-            if (data.complaints.length > 0) {
-                const latest = data.complaints[0];
-                map.flyTo([latest.latitude, latest.longitude], 17, { duration: 1.2 });
-            }
+      // ⭐ Find most recent complaint
+      let latest = null;
+      if (data.complaints.length > 0) {
+        latest = data.complaints[data.complaints.length - 1];
+        map.flyTo([Number(latest.latitude),Number(latest.longitude)], 17);
+      }
 
-            data.complaints.forEach(c => {
-                if (!c.latitude || !c.longitude) return;
+      // Group complaints by coordinates
+      data.complaints.forEach(c => {
+        if (!c.latitude || !c.longitude) return;
 
-                const key = `${c.latitude},${c.longitude}`;
-                if (!grouped[key]) grouped[key] = [];
-                grouped[key].push(c);
-            });
+        const key = `${c.latitude},${c.longitude}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(c);
+      });
 
-            Object.keys(grouped).forEach(key => {
-                let items = grouped[key];
-                const [lat, lng] = key.split(",").map(Number);
+      // Create markers for each location
+      Object.keys(grouped).forEach(key => {
+        let items = grouped[key];
+        const [lat, lng] = key.split(",").map(v => Number(v.trim()));
 
-                if (filterType !== "All" &&
-                    !items.some(c => c.complaint_type === filterType)) return;
+        // Show marker only if ANY record matches filter
+        if (filterType !== "All" && !items.some(c => c.complaint_type === filterType)) return;
 
-                if (filterType !== "All") {
-                    items = items.filter(c => c.complaint_type === filterType);
-                }
+        // Filter popup items based on filter
+        if (filterType !== "All") {
+          items = items.filter(c => c.complaint_type === filterType);
+        }
 
-                let index = 0;
-                const marker = L.marker([lat, lng]).bindPopup("");
+        let index = 0;
 
-                function showPopup() {
-                    const d = items[index];
+        // 🔹 DEFAULT MARKER (no colored circles)
+        const marker = L.marker([lat, lng]).bindPopup("");
 
-                    let html = `
-                        <b>${d.complaint_type}</b><br>
-                        <b>Urgency:</b> ${d.urgency}<br>
-                        <b>Description:</b> ${d.description}<br>
-                        <b>Reported By:</b> ${d.fullname}<br>
-                        <small>${index + 1} / ${items.length}</small><br><br>
-                    `;
+        // Function to update popup content
+        function showPopup() {
+          const d = items[index];
 
-                    if (d.image_url) {
-                        html += `<img src="${d.image_url}" 
-                        style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
-                    }
+          let html = `
+            <b>${d.complaint_type}</b><br>
+            <b>Urgency:</b> ${d.urgency}<br>
+            <b>Description:</b> ${d.description}<br>
+            <b>Reported By:</b> ${d.fullname}<br>
+            <small>${index + 1} / ${items.length}</small><br><br>
+          `;
 
-                    if (items.length > 1) {
-                        html += `
-                            <button id="prevBtn">⬅ Prev</button>
-                            <button id="nextBtn">Next ➡</button>
-                        `;
-                    }
+          if (d.image_url) {
+            html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
+          }
 
-                    marker.getPopup().setContent(html);
 
-                    setTimeout(() => {
-                        const next = document.getElementById("nextBtn");
-                        const prev = document.getElementById("prevBtn");
+          if (items.length > 1) {
+            html += `
+              <button id="prevBtn">⬅ Prev</button>
+              <button id="nextBtn">Next ➡</button>
+            `;
+          }
 
-                        if (next) next.onclick = (e) => {
-                            e.stopPropagation();
-                            index = (index + 1) % items.length;
-                            showPopup();
-                        };
+          marker.getPopup().setContent(html);
 
-                        if (prev) prev.onclick = (e) => {
-                            e.stopPropagation();
-                            index = (index - 1 + items.length) % items.length;
-                            showPopup();
-                        };
-                    }, 150);
-                }
+          setTimeout(() => {
+            const next = document.getElementById("nextBtn");
+            const prev = document.getElementById("prevBtn");
 
-                marker.on("click", showPopup);
-                markers.addLayer(marker);
-            });
-        });
+            if (next) next.onclick = (e) => {
+              e.stopPropagation();
+              index = (index + 1) % items.length;
+              showPopup();
+            };
+
+            if (prev) prev.onclick = (e) => {
+              e.stopPropagation();
+              index = (index - 1 + items.length) % items.length;
+              showPopup();
+            };
+
+            const popupEl = document.querySelector(".leaflet-popup");
+            if (popupEl) L.DomEvent.disableClickPropagation(popupEl);
+
+          }, 150);
+        }
+
+        // Click Handler to Open Popup
+        marker.on("click", showPopup);
+
+        // Add Marker to Cluster Layer
+        markers.addLayer(marker);
+      });
+    });
 }
 
-// INITIAL LOAD
+// Load Initial Data
 loadComplaints();
 
-// FILTER BUTTON CLICK HANDLERS
+// Filter Buttons
 document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        loadComplaints(btn.dataset.type);
-    });
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    loadComplaints(btn.dataset.type);
+  });
 });
