@@ -45,7 +45,7 @@ function loadComplaints(filterType = "All") {
       // Create markers for each location
       Object.keys(grouped).forEach(key => {
         let items = grouped[key];
-        const [lat, lng] = key.split(",").map(Number);
+        const [lat, lng] = key.split(",").map(v => Number(v.trim()));
 
         // Show marker only if ANY record matches filter
         if (filterType !== "All" && !items.some(c => c.complaint_type === filterType)) return;
