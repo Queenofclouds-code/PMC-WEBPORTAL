@@ -1,131 +1,3 @@
-/* RESET + BACKGROUND IMAGE */
-body {
-  margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #1a1a1a;
-
-  /* Background Image */
-  background: url("sus.jpg") no-repeat center center fixed;
-  background-size: cover;
-
-  /* Light overlay */
-  backdrop-filter: brightness(0.88);
-}
-
-/* HEADER */
-.gov-header {
-  background: rgba(0, 87, 183, 0.95);
-  color: white;
-  width: 100%;
-  padding: 25px 10px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-}
-
-.gov-header h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 600;
-}
-
-/* NAVIGATION */
-nav {
-  margin-top: 10px;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  padding: 8px 15px;
-  font-size: 15px;
-  border-radius: 6px;
-  margin: 0 4px;
-}
-
-nav a.active,
-nav a:hover {
-  background: #004095;
-}
-
-/* DASHBOARD CARDS */
-.section-card {
-  width: 900px;
-  max-width: 90%;
-  margin: 30px auto;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 3px 15px rgba(0,0,0,0.15);
-}
-
-/* QUOTE BOX */
-.quote-box blockquote {
-  background: #e6f0ff;
-  padding: 20px;
-  border-left: 6px solid #0057b7;
-  font-style: italic;
-  font-size: 18px;
-}
-
-/* FORM CENTERING */
-.container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-/* FORM CARD */
-.form-card {
-  max-width: 550px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 25px;
-  margin-top: 30px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-}
-
-label {
-  font-weight: 600;
-  margin-top: 12px;
-  display: block;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #c7cdd4;
-  font-size: 15px;
-  box-sizing: border-box;
-}
-
-.submit-btn {
-  margin: 20px auto;
-  display: block;
-  padding: 14px;
-  background: #0057b7;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.submit-btn:hover {
-  background: #004095;
-}
-
-/* IMAGE PREVIEW */
-.preview img {
-  width: 90px;
-  margin-top: 12px;
-  margin-right: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 
 /* Full viewport layout */
@@ -138,6 +10,7 @@ input, select, textarea {
 
 /* LEFT VERTICAL FILTER PANEL */
 .filter-panel {
+  position: relative;  /* REQUIRED for collapse arrow */
   width: 200px;
   background: rgba(255, 255, 255, 0.95);
   padding: 20px 10px;
@@ -146,8 +19,6 @@ input, select, textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  /* FIX: match map height */
   height: 100%;
 }
 
@@ -170,32 +41,6 @@ input, select, textarea {
   color: white;
 }
 
-/* MAP AREA RIGHT SIDE */
-#map {
-  flex: 1;
-  width: 100%;
-
-  /* FIX: no gap, matches panel height */
-  height: 100%;
-}
-
-/* CONTACT SECTION */
-.section-card p {
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-button {
-  cursor: pointer;
-}
-
-/* Allow clicking inside Leaflet popup */
-.leaflet-popup-content {
-  pointer-events: auto !important;
-}
-.leaflet-popup {
-  pointer-events: auto !important;
-}
 /* COLLAPSE BUTTON */
 .collapse-btn {
   position: absolute;
@@ -213,7 +58,7 @@ button {
   cursor: pointer;
   font-size: 16px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  z-index: 999;
+  z-index: 9999; /* keep arrow above map */
 }
 
 /* COLLAPSED PANEL */
@@ -224,14 +69,22 @@ button {
   border-right: none;
 }
 
-/* Shift button outward when collapsed */
+/* Arrow flips when collapsed */
 .filter-panel.collapsed .collapse-btn {
   right: -20px;
   transform: translateY(-50%) rotate(180deg);
+}
+
+/* MAP AREA */
+#map {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative; /* ensure map doesn't hide arrow */
+  z-index: 1;
 }
 
 /* Map expands when panel is collapsed */
 .complaints-layout.collapsed-map #map {
   width: 100%;
 }
-
