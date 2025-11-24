@@ -30,7 +30,7 @@ function loadComplaints(filterType = "All") {
       let latest = null;
       if (data.complaints.length > 0) {
         latest = data.complaints[data.complaints.length - 1];
-        map.flyTo([latest.latitude, latest.longitude], 17);
+        map.flyTo([Number(latest.latitude),Number(latest.longitude)], 17);
       }
 
       // Group complaints by coordinates
