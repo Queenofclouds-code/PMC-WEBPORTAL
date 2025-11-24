@@ -29,7 +29,7 @@ function loadComplaints(filterType = "All") {
       // ⭐ Find most recent complaint
       let latest = null;
       if (data.complaints.length > 0) {
-        latest = data.complaints[data.complaints.length - 1];
+        latest = data.complaints[0];
         map.flyTo([Number(latest.latitude),Number(latest.longitude)], 17);
       }
 
