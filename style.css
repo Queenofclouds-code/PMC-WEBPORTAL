@@ -3,10 +3,8 @@ body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1a1a1a;
-
   background: url("sus.jpg") no-repeat center center fixed;
   background-size: cover;
-
   backdrop-filter: brightness(0.88);
 }
 
@@ -27,9 +25,7 @@ body {
 }
 
 /* NAVIGATION */
-nav {
-  margin-top: 10px;
-}
+nav { margin-top: 10px; }
 nav a {
   color: white;
   text-decoration: none;
@@ -38,10 +34,7 @@ nav a {
   border-radius: 6px;
   margin: 0 4px;
 }
-nav a.active,
-nav a:hover {
-  background: #004095;
-}
+nav a.active, nav a:hover { background: #004095; }
 
 /* DASHBOARD CARDS */
 .section-card {
@@ -80,12 +73,7 @@ nav a:hover {
   box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-label {
-  font-weight: 600;
-  margin-top: 12px;
-  display: block;
-}
-
+label { font-weight: 600; margin-top: 12px; display: block; }
 input, select, textarea {
   width: 100%;
   padding: 12px;
@@ -107,9 +95,7 @@ input, select, textarea {
   font-size: 16px;
   cursor: pointer;
 }
-.submit-btn:hover {
-  background: #004095;
-}
+.submit-btn:hover { background: #004095; }
 
 /* IMAGE PREVIEW */
 .preview img {
@@ -123,6 +109,7 @@ input, select, textarea {
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 .complaints-layout {
   display: flex;
+  position: relative; /* important for absolute arrow */
   width: 100%;
   height: calc(100vh - 165px);
   overflow: hidden;
@@ -131,7 +118,7 @@ input, select, textarea {
 /* LEFT FILTER PANEL */
 .filter-panel {
   position: relative;
-  z-index: 10;        /* <-- add this */
+  z-index: 10;
   width: 200px;
   background: rgba(255, 255, 255, 0.95);
   padding: 20px 10px;
@@ -143,36 +130,15 @@ input, select, textarea {
   height: 100%;
 }
 
-
-.collapse-container {
-  position: relative;
-  width: 0; /* no width so it does not affect layout */
+/* COLLAPSED PANEL */
+.filter-panel.collapsed {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-right: none;
 }
 
-.collapse-btn {
-  position: absolute;
-  left: 200px; /* sits at right edge of panel */
-  top: 50%;
-  transform: translateY(-50%);
-  background: #0057b7;
-  color: white;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: 16px;
-  z-index: 9999;
-}
-
-.filter-panel.collapsed + .collapse-container .collapse-btn {
-  left: 0; /* arrow moves to the left when panel is collapsed */
-  transform: translateY(-50%) rotate(180deg);
-}
-
-/* FILTER BUTTONS */
+/* FILTER BUTTON */
 .filter-panel .filter-btn {
   background: #e6eef8;
   border: none;
@@ -190,6 +156,31 @@ input, select, textarea {
   color: white;
 }
 
+/* COLLAPSE BUTTON (PATCHED) */
+.collapse-btn {
+  position: absolute;
+  left: 200px; /* beside panel */
+  top: 50%;
+  transform: translateY(-50%);
+  background: #0057b7;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 9999;
+}
+
+/* Move arrow when collapsed */
+.filter-panel.collapsed + .collapse-btn {
+  left: 0;
+  transform: translateY(-50%) rotate(180deg);
+}
+
 /* MAP AREA */
 #map {
   flex: 1;
@@ -204,17 +195,7 @@ input, select, textarea {
   width: 100%;
 }
 
-/* CONTACT SECTION */
-.section-card p {
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-button {
-  cursor: pointer;
-}
-
-.leaflet-popup-content,
-.leaflet-popup {
+button { cursor: pointer; }
+.leaflet-popup-content, .leaflet-popup {
   pointer-events: auto !important;
 }
