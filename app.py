@@ -6,6 +6,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+# ======== ALLOW 50MB UPLOADS ========
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50MB limit
+
 # ======== FILE UPLOAD LOCATION =========
 UPLOAD_FOLDER = "/var/www/complaint_uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -15,7 +18,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # ==========================
 try:
     conn = psycopg2.connect(
-        dbname="complaint_portal",   # Correct DB name
+        dbname="complaint_portal",
         user="postgres",
         password="meghaj",
         host="localhost",
@@ -49,18 +52,22 @@ def add_complaint():
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         image_file.save(filepath)
 
-    # 🔥 Updated BASE URL for deployment
-    BASE_URL = "https://gist.aeronica.in/portal"
-    image_url = f"{BASE_URL}/uploads/{filename}"
+        BASE_URL = "https://gist.aeronica.in/portal"
+        image_url = f"{BASE_URL}/uploads/{filename}"
 
     sql = """
-        INSERT INTO complaints(fullname, phone, complaint_type, description, urgency, latitude, longitude, image_url)
+        INSERT INTO complaints(fullname, phone, complaint_type, description,
+        urgency, latitude, longitude, image_url)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
-    cursor.execute(sql, (fullname, phone, complaint_type, description, urgency, latitude, longitude, image_url))
+    cursor.execute(sql, (
+        fullname, phone, complaint_type, description,
+        urgency, latitude, longitude, image_url
+    ))
+
     conn.commit()
 
-    return jsonify({"status": "success", "message": "Complaint successfully saved", "image_url": image_url})
+    return jsonify({"status": "success", "message": "Complaint saved", "image_url": image_url})
 
 # ==========================
 # HOST UPLOADED IMAGES
@@ -93,7 +100,6 @@ def get_complaints():
         })
 
     return jsonify({"complaints": complaints})
-
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
