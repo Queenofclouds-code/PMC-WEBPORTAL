@@ -4,11 +4,9 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1a1a1a;
 
-  /* Background Image */
   background: url("sus.jpg") no-repeat center center fixed;
   background-size: cover;
 
-  /* Light overlay */
   backdrop-filter: brightness(0.88);
 }
 
@@ -32,7 +30,6 @@ body {
 nav {
   margin-top: 10px;
 }
-
 nav a {
   color: white;
   text-decoration: none;
@@ -41,7 +38,6 @@ nav a {
   border-radius: 6px;
   margin: 0 4px;
 }
-
 nav a.active,
 nav a:hover {
   background: #004095;
@@ -58,7 +54,6 @@ nav a:hover {
   box-shadow: 0 3px 15px rgba(0,0,0,0.15);
 }
 
-/* QUOTE BOX */
 .quote-box blockquote {
   background: #e6f0ff;
   padding: 20px;
@@ -112,7 +107,6 @@ input, select, textarea {
   font-size: 16px;
   cursor: pointer;
 }
-
 .submit-btn:hover {
   background: #004095;
 }
@@ -127,17 +121,16 @@ input, select, textarea {
 }
 
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
-
-/* Full viewport layout */
 .complaints-layout {
   display: flex;
   width: 100%;
-  height: calc(100vh - 165px); /* header + navbar height */
+  height: calc(100vh - 165px);
   overflow: hidden;
 }
 
-/* LEFT VERTICAL FILTER PANEL */
+/* LEFT FILTER PANEL */
 .filter-panel {
+  position: relative;
   width: 200px;
   background: rgba(255, 255, 255, 0.95);
   padding: 20px 10px;
@@ -146,55 +139,7 @@ input, select, textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  /* FIX: match map height */
   height: 100%;
-}
-
-/* FILTER BUTTONS */
-.filter-panel .filter-btn {
-  background: #e6eef8;
-  border: none;
-  padding: 10px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #003d82;
-  text-align: left;
-  font-weight: 600;
-}
-
-.filter-panel .filter-btn.active,
-.filter-panel .filter-btn:hover {
-  background: #0057b7;
-  color: white;
-}
-
-/* MAP AREA RIGHT SIDE */
-#map {
-  flex: 1;
-  width: 100%;
-
-  /* FIX: no gap, matches panel height */
-  height: 100%;
-}
-
-/* CONTACT SECTION */
-.section-card p {
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-button {
-  cursor: pointer;
-}
-
-/* Allow clicking inside Leaflet popup */
-.leaflet-popup-content {
-  pointer-events: auto !important;
-}
-.leaflet-popup {
-  pointer-events: auto !important;
 }
 
 /* COLLAPSE BUTTON */
@@ -214,7 +159,7 @@ button {
   cursor: pointer;
   font-size: 16px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  z-index: 999;
+  z-index: 9999;
 }
 
 /* COLLAPSED PANEL */
@@ -225,13 +170,55 @@ button {
   border-right: none;
 }
 
-/* Shift button outward when collapsed */
+/* Arrow flips when collapsed */
 .filter-panel.collapsed .collapse-btn {
   right: -20px;
   transform: translateY(-50%) rotate(180deg);
 }
 
-/* Map expands when panel is collapsed */
+/* FILTER BUTTONS */
+.filter-panel .filter-btn {
+  background: #e6eef8;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #003d82;
+  text-align: left;
+  font-weight: 600;
+}
+.filter-panel .filter-btn.active,
+.filter-panel .filter-btn:hover {
+  background: #0057b7;
+  color: white;
+}
+
+/* MAP AREA */
+#map {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* EXPAND MAP WHEN COLLAPSED */
 .complaints-layout.collapsed-map #map {
   width: 100%;
+}
+
+/* CONTACT SECTION */
+.section-card p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+button {
+  cursor: pointer;
+}
+
+.leaflet-popup-content,
+.leaflet-popup {
+  pointer-events: auto !important;
 }
