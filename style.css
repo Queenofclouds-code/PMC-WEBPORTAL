@@ -1,11 +1,14 @@
-/* RESET + BACKGROUND */
+/* RESET + BACKGROUND IMAGE */
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1a1a1a;
 
+  /* Background Image */
   background: url("sus.jpg") no-repeat center center fixed;
   background-size: cover;
+
+  /* Light overlay */
   backdrop-filter: brightness(0.88);
 }
 
@@ -25,7 +28,7 @@ body {
   font-weight: 600;
 }
 
-/* NAVBAR */
+/* NAVIGATION */
 nav {
   margin-top: 10px;
 }
@@ -44,21 +47,106 @@ nav a:hover {
   background: #004095;
 }
 
-/* MAIN LAYOUT */
+/* DASHBOARD CARDS */
+.section-card {
+  width: 900px;
+  max-width: 90%;
+  margin: 30px auto;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+}
+
+/* QUOTE BOX */
+.quote-box blockquote {
+  background: #e6f0ff;
+  padding: 20px;
+  border-left: 6px solid #0057b7;
+  font-style: italic;
+  font-size: 18px;
+}
+
+/* FORM CENTERING */
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* FORM CARD */
+.form-card {
+  max-width: 550px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  margin-top: 30px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+label {
+  font-weight: 600;
+  margin-top: 12px;
+  display: block;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #c7cdd4;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  margin: 20px auto;
+  display: block;
+  padding: 14px;
+  background: #0057b7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #004095;
+}
+
+.camera-btn {
+  background: #198754;
+  margin-top: 15px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+/* IMAGE PREVIEW */
+.preview img {
+  width: 90px;
+  margin-top: 12px;
+  margin-right: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
+
+/* Full viewport layout */
 .complaints-layout {
   display: flex;
   width: 100%;
-  height: calc(100vh - 165px);
+  height: calc(100vh - 165px); /* header + navbar height */
   overflow: hidden;
 }
 
-/* WRAPPER FOR PANEL + SPLITTER */
-.filter-wrapper {
-  position: relative;
-  height: 100%;
-}
-
-/* LEFT PANEL */
+/* LEFT VERTICAL FILTER PANEL */
 .filter-panel {
   width: 200px;
   background: rgba(255, 255, 255, 0.95);
@@ -68,18 +156,13 @@ nav a:hover {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 100%;
-  overflow: hidden;
-  transition: width 0.3s ease;
-}
 
-.filter-panel.collapsed {
-  width: 0;
-  padding: 0;
+  /* FIX: match map height */
+  height: 100%;
 }
 
 /* FILTER BUTTONS */
-.filter-btn {
+.filter-panel .filter-btn {
   background: #e6eef8;
   border: none;
   padding: 10px 12px;
@@ -91,76 +174,35 @@ nav a:hover {
   font-weight: 600;
 }
 
-.filter-btn.active,
-.filter-btn:hover {
+.filter-panel .filter-btn.active,
+.filter-panel .filter-btn:hover {
   background: #0057b7;
   color: white;
 }
 
-/* MAP AREA */
+/* MAP AREA RIGHT SIDE */
 #map {
   flex: 1;
   width: 100%;
+
+  /* FIX: no gap, matches panel height */
   height: 100%;
 }
 
-/* SLIM SPLITTER BUTTON ( | < | ) */
-.collapse-splitter {
-  position: absolute;
-  left: 200px;
-  top: 50%;
-  transform: translateY(-50%);
+/* CONTACT SECTION */
+.section-card p {
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-  width: 14px;
-  height: 60px;
-
-  background: #cfd8e6;
-  border-right: 2px solid #b9c2d0;
-  color: #003d82;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+button {
   cursor: pointer;
-  user-select: none;
-
-  border-radius: 4px;
-  font-weight: bold;
-  z-index: 9999;
-  transition: left 0.3s ease;
 }
 
-/* WHEN PANEL COLLAPSED */
-.collapse-splitter.collapsed {
-  left: 0 !important;
-}
-
-/* LEAFLET FIX */
-.leaflet-popup,
+/* Allow clicking inside Leaflet popup */
 .leaflet-popup-content {
   pointer-events: auto !important;
 }
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .collapse-splitter {
-    display: none;
-  }
-
-  .complaints-layout {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .filter-panel {
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    overflow-x: auto;
-  }
-
-  #map {
-    height: 70vh;
-  }
+.leaflet-popup {
+  pointer-events: auto !important;
 }
