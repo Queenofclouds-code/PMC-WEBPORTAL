@@ -10,6 +10,31 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
+// =========================
+// COLLAPSE FILTER PANEL
+// =========================
+const filterPanel = document.querySelector(".filter-panel");
+const layout = document.querySelector(".complaints-layout");
+const toggleBtn = document.getElementById("collapseToggle");
+
+toggleBtn.addEventListener("click", () => {
+  filterPanel.classList.toggle("collapsed");
+  layout.classList.toggle("collapsed-map");
+
+  // Flip arrow direction
+  if (filterPanel.classList.contains("collapsed")) {
+    toggleBtn.textContent = "▶";
+  } else {
+    toggleBtn.textContent = "◀";
+  }
+
+  // Resize map properly
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 300);
+});
+
+
 
 
 
