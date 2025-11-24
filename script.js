@@ -15,8 +15,6 @@ function getLiveLocation() {
   });
 }
 
-window.onload = () => getLiveLocation();
-
 // =======================
 // FILE INPUT ONLY (NO CAMERA)
 // =======================
@@ -108,7 +106,7 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
     preview.innerHTML = "";
 
     // Android-compatible page refresh
-    window.location.replace(window.location.href);
+    window.location.reload();
 
   } catch (err) {
     alert("❌ Submission failed");
