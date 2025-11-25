@@ -74,6 +74,7 @@ function loadComplaints(filterType = "All") {
 
           let html = `
             <b>${d.complaint_type}</b><br>
+            <b>Status:</b> ${d.status}<br>
             <b>Urgency:</b> ${d.urgency}<br>
             <b>Description:</b> ${d.description}<br>
             <b>Reported By:</b> ${d.fullname}<br>
