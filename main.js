@@ -17,20 +17,25 @@ const filterPanel = document.getElementById("leftPanel");
 const layout = document.querySelector(".complaints-layout");
 const toggleBtn = document.getElementById("collapseToggle");
 
-toggleBtn.addEventListener("click", () => {
-  filterPanel.classList.toggle("collapsed");
-  layout.classList.toggle("collapsed-map");
+if (toggleBtn && filterPanel && layout) {
+  toggleBtn.addEventListener("click", () => {
+    filterPanel.classList.toggle("collapsed");
+    layout.classList.toggle("collapsed-map");
 
-  toggleBtn.textContent = filterPanel.classList.contains("collapsed") ? "▶" : "◀";
+    toggleBtn.textContent = filterPanel.classList.contains("collapsed") ? "▶" : "◀";
 
-  setTimeout(() => map.invalidateSize(), 300);
-});
+    setTimeout(() => map.invalidateSize(), 300);
+  });
+}
 
 // =========================
 // MARKERS + CLUSTERS
 // =========================
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
+
+// Ensure we only auto-zoom once per page load (or after a new registration if the page reloads)
+window.hasZoomedOnce = false;
 
 // Load complaints
 function loadComplaints(filterType = "All") {
@@ -41,10 +46,14 @@ function loadComplaints(filterType = "All") {
       markers.clearLayers();
       const grouped = {};
 
-      // Zoom to most recent
-      if (data.complaints.length > 0) {
-        let latest = data.complaints[0];
-        map.flyTo([Number(latest.latitude), Number(latest.longitude)], 17);
+      // ⭐ Auto-zoom only once (first successful load)
+      if (!window.hasZoomedOnce && data.complaints && data.complaints.length > 0) {
+        // assume API returns newest first; use index 0 as latest
+        const latest = data.complaints[0];
+        if (latest && latest.latitude && latest.longitude) {
+          map.flyTo([Number(latest.latitude), Number(latest.longitude)], 17);
+          window.hasZoomedOnce = true;
+        }
       }
 
       // Group by coordinate
@@ -115,6 +124,9 @@ function loadComplaints(filterType = "All") {
         marker.on("click", showPopup);
         markers.addLayer(marker);
       });
+    })
+    .catch(err => {
+      console.error("Failed to load complaints:", err);
     });
 }
 
@@ -125,6 +137,8 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+
+    // Call loadComplaints with the selected filter — no zoom will occur because hasZoomedOnce will be true
     loadComplaints(btn.dataset.type);
   });
 });
