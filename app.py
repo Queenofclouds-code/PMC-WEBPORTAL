@@ -96,7 +96,8 @@ def get_complaints():
             "latitude": r[6],
             "longitude": r[7],
             "created_at": str(r[8]),
-            "image_url": r[9]
+            "image_url": r[9],
+            "status":r[10]
         })
 
     return jsonify({"complaints": complaints})
