@@ -92,10 +92,11 @@ document.getElementById("complaintForm").addEventListener("submit", async (e) =>
   }
 
   try {
-    const res = await fetch("/portal/api/complaints", {
+    const res = await fetch("https://gist.aeronica.in/portal/api/complaints", {
       method: "POST",
       body: formData,
     });
+
 
     await res.json();
 
