@@ -3,8 +3,17 @@ from flask_cors import CORS
 import psycopg2
 import os
 
+# ===== NEW IMPORTS (JWT + BCRYPT) =====
+import bcrypt
+import jwt
+from functools import wraps
+from datetime import datetime, timedelta
+
 app = Flask(__name__)
 CORS(app)
+
+# ===== SECRET KEY FOR JWT =====
+SECRET_KEY = "CHANGE_THIS_TO_A_RANDOM_SECRET_64_CHAR"
 
 # ======== ALLOW 50MB UPLOADS ========
 app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50MB limit
@@ -28,6 +37,59 @@ try:
     print("✅ PostgreSQL Connected Successfully!")
 except Exception as e:
     print("❌ Failed to connect to PostgreSQL:", e)
+
+# ==========================
+# 🔒 JWT VERIFICATION DECORATOR
+# ==========================
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+
+        if "Authorization" in request.headers:
+            token = request.headers["Authorization"].replace("Bearer ", "")
+
+        if not token:
+            return jsonify({"error": "Token missing"}), 401
+
+        try:
+            data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            request.admin_id = data["admin_id"]
+        except Exception:
+            return jsonify({"error": "Invalid or expired token"}), 401
+
+        return f(*args, **kwargs)
+    return decorated
+
+
+# ==========================
+# 🔐 ADMIN LOGIN API (JWT)
+# ==========================
+@app.route("/portal/api/admin/login", methods=["POST"])
+def admin_login():
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    cursor.execute("SELECT id, password_hash FROM admin_users WHERE username=%s", (username,))
+    admin = cursor.fetchone()
+
+    if not admin:
+        return jsonify({"error": "Invalid username"}), 401
+
+    admin_id, stored_hash = admin
+
+    if not bcrypt.checkpw(password.encode(), stored_hash.encode()):
+        return jsonify({"error": "Invalid password"}), 401
+
+    token = jwt.encode(
+        {"admin_id": admin_id, "exp": datetime.utcnow() + timedelta(hours=24)},
+        SECRET_KEY,
+        algorithm="HS256"
+    )
+
+    return jsonify({"token": token})
+
 
 # ==========================
 # POST: Store complaint + image
@@ -69,6 +131,7 @@ def add_complaint():
 
     return jsonify({"status": "success", "message": "Complaint saved", "image_url": image_url})
 
+
 # ==========================
 # HOST UPLOADED IMAGES
 # ==========================
@@ -76,11 +139,13 @@ def add_complaint():
 def serve_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
+
 # ==========================
-# GET: Fetch complaints
+# 🔒 ADMIN: GET ALL COMPLAINTS (PROTECTED)
 # ==========================
-@app.route("/portal/api/complaints", methods=["GET"])
-def get_complaints():
+@app.route("/portal/api/admin/complaints", methods=["GET"])
+@admin_required
+def get_all_complaints():
     cursor.execute("SELECT * FROM complaints ORDER BY created_at DESC")
     rows = cursor.fetchall()
 
@@ -97,10 +162,14 @@ def get_complaints():
             "longitude": r[7],
             "created_at": str(r[8]),
             "image_url": r[9],
-            "status":r[10]
+            "status": r[10]
         })
 
     return jsonify({"complaints": complaints})
 
+
+# ==========================
+# RUN APP
+# ==========================
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
