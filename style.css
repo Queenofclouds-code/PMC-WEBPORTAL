@@ -1,7 +1,9 @@
 html, body {
-    height: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
     overflow-y: auto;
 }
+
 /* RESET + BACKGROUND IMAGE */
 body {
   margin: 0;
@@ -113,10 +115,11 @@ input, select, textarea {
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 .complaints-layout {
     display: flex;
-    height: calc(100vh - 150px);  /* final working height */
-    min-height: calc(100vh - 150px);
+    height: calc(100vh - 120px);   /* FIX */
+    min-height: calc(100vh - 120px);
     overflow: hidden;
 }
+
 
 
 
