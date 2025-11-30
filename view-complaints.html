@@ -7,16 +7,18 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- LEAFLET -->
+  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!-- MARKER CLUSTER -->
+  <!-- Marker Cluster -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  
+  <style>
+    body { background: white !important; }
+  </style>
 </head>
 
 <body>
@@ -32,15 +34,18 @@
 
 <div class="complaints-layout">
 
-  <!-- LEFT FILTER PANEL -->
-  <div class="filter-panel">
-    <button class="filter-btn active" data-type="All">All</button>
-    <button class="filter-btn" data-type="Garbage">Garbage</button>
-    <button class="filter-btn" data-type="Street Light">Street Light</button>
-    <button class="filter-btn" data-type="Water Supply">Water Supply</button>
-    <button class="filter-btn" data-type="Sewage">Sewage</button>
-    <button class="filter-btn" data-type="Other">Other</button>
+  <!-- YOUR ORIGINAL SIDEBAR (UNCHANGED) -->
+  <div class="filter-panel" id="leftPanel">
+      <button class="filter-btn active" data-type="All">All</button>
+      <button class="filter-btn" data-type="Garbage">Garbage</button>
+      <button class="filter-btn" data-type="Street Light">Street Light</button>
+      <button class="filter-btn" data-type="Water Supply">Water Supply</button>
+      <button class="filter-btn" data-type="Sewage">Sewage</button>
+      <button class="filter-btn" data-type="Other">Other</button>
   </div>
+
+  <!-- NEW COLLAPSE BUTTON (ADDED) -->
+  <div id="collapseSidebar" class="sidebar-toggle">◀</div>
 
   <!-- MAP -->
   <div id="map"></div>
