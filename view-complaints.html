@@ -53,23 +53,6 @@
 </div>
 
 
-<script>
-function resizeLayout() {
-    const header = document.querySelector('.gov-header');
-    const layout = document.querySelector('.complaints-layout');
-    const h = header.getBoundingClientRect().height;
-
-    layout.style.top = h + "px";
-
-    if (window.map && typeof window.map.invalidateSize === "function") {
-        setTimeout(() => map.invalidateSize(), 200);
-    }
-}
-
-window.addEventListener("load", resizeLayout);
-window.addEventListener("resize", resizeLayout);
-</script>
-
 <script src="main.js"></script>
 
 </body>
