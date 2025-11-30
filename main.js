@@ -19,27 +19,24 @@ function refreshMap() {
   }
 }
 
-// Recalculate on window resize
 window.addEventListener("resize", refreshMap);
 
-// =========================
-// COLLAPSE FILTER PANEL
-// =========================
-const filterPanel = document.getElementById("leftPanel");
-const layout = document.querySelector(".complaints-layout");
-const toggleBtn = document.getElementById("collapseToggle");
+// =====================================================
+// COLLAPSIBLE SIDEBAR LOGIC (FINAL)
+// =====================================================
+const leftPanel = document.getElementById("leftPanel");
+const collapseSidebar = document.getElementById("collapseSidebar");
 
-if (toggleBtn && filterPanel && layout) {
-  toggleBtn.addEventListener("click", () => {
-    filterPanel.classList.toggle("collapsed");
-    layout.classList.toggle("collapsed-map");
+collapseSidebar.addEventListener("click", () => {
+    leftPanel.classList.toggle("collapsed");
 
-    toggleBtn.textContent =
-      filterPanel.classList.contains("collapsed") ? "▶" : "◀";
+    // Change arrow direction
+    collapseSidebar.textContent =
+      leftPanel.classList.contains("collapsed") ? "▶" : "◀";
 
+    // Resize map
     refreshMap();
-  });
-}
+});
 
 // =========================
 // MARKERS + CLUSTERS
@@ -60,7 +57,7 @@ function loadComplaints(filterType = "All") {
       markers.clearLayers();
       const grouped = {};
 
-      // ⭐ AUTO-ZOOM to latest complaint ONLY once
+      // ⭐ Auto-zoom only once
       if (!window.hasZoomedOnce && data.complaints.length > 0) {
         const latest = data.complaints[0];
         if (latest.latitude && latest.longitude) {
@@ -69,10 +66,9 @@ function loadComplaints(filterType = "All") {
         }
       }
 
-      // Group by coordinate
+      // Group complaints
       data.complaints.forEach(c => {
         if (!c.latitude || !c.longitude) return;
-
         const key = `${c.latitude},${c.longitude}`;
         if (!grouped[key]) grouped[key] = [];
         grouped[key].push(c);
@@ -83,9 +79,8 @@ function loadComplaints(filterType = "All") {
         let items = grouped[key];
         const [lat, lng] = key.split(",").map(Number);
 
-        // Apply filter
         if (filterType !== "All") {
-          items = items.filter(c => c.complaint_type === filterType);
+          items = items.filter(x => x.complaint_type === filterType);
           if (!items.length) return;
         }
 
@@ -141,28 +136,21 @@ function loadComplaints(filterType = "All") {
         markers.addLayer(marker);
       });
 
-      refreshMap(); // ensure map fits after markers load
+      refreshMap();
     })
-    .catch(err => {
-      console.error("Failed to load complaints:", err);
-    });
+    .catch(err => console.error("Failed to load complaints:", err));
 }
 
 loadComplaints();
 
-// =========================
 // FILTER BUTTONS
-// =========================
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    document
-      .querySelectorAll(".filter-btn")
-      .forEach(b => b.classList.remove("active"));
-
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+
     loadComplaints(btn.dataset.type);
   });
 });
 
-// Extra safety: resize map after initial load
 refreshMap();
