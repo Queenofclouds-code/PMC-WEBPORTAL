@@ -120,13 +120,14 @@ input, select, textarea {
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 .complaints-layout {
   position: fixed;
-  top: 120px;   /* will auto-adjust using JS below */
+  top: 0;   /* JS will correct this */
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
   overflow: hidden;
 }
+
 
 
 
