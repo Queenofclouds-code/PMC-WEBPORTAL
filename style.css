@@ -207,3 +207,49 @@ button { cursor: pointer; }
 .leaflet-popup-content, .leaflet-popup {
   pointer-events: auto !important;
 }
+/* =========================
+   COLLAPSIBLE SIDEBAR UPGRADE
+========================= */
+
+/* Sidebar slide animation */
+.filter-panel {
+  transition: transform 0.35s ease;
+  transform: translateX(0);
+  position: relative;
+  z-index: 1000;
+}
+
+.filter-panel.collapsed {
+  transform: translateX(-200px); /* same width as panel */
+}
+
+/* Collapse Button */
+.sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  left: 200px; /* width of sidebar */
+  transform: translateY(-50%);
+  width: 28px;
+  height: 40px;
+  background: #0057b7;
+  color: white;
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2000;
+  transition: left 0.35s ease, transform 0.35s ease;
+  font-size: 20px;
+}
+
+/* Move arrow when collapsed */
+.filter-panel.collapsed + .sidebar-toggle {
+  left: 0;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Map expands when sidebar collapses */
+.filter-panel.collapsed ~ #map {
+  left: 0 !important;
+}
