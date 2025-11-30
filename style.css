@@ -8,7 +8,8 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1a1a1a;
   background: url("sus.jpg") no-repeat center center;
-   background-size: cover;
+  background-attachment: scroll;
+  background-size: cover;
   backdrop-filter: brightness(0.88);
 }
 
