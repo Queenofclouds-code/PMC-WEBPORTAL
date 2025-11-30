@@ -120,7 +120,7 @@ input, select, textarea {
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 .complaints-layout {
   position: absolute;
-  top: 140px;   /* adjust if needed by +5 or -5 */
+  top: 150px;   /* adjust if needed by +5 or -5 */
   left: 0;
   right: 0;
   bottom: 0;
