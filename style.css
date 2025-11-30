@@ -147,11 +147,8 @@ nav a.active, nav a:hover { background: #004095; }
 
 /* MAP FULL SCREEN */
 #map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  flex:1;
+  height: 100%;
 }
 
 .leaflet-popup-content, .leaflet-popup {
