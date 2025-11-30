@@ -6,13 +6,11 @@
   <title>View Complaints</title>
 
   <link rel="stylesheet" href="style.css" />
-    <style>
-    body {
-      background: none !important;
-      background-color: #ffffff !important;
-    }
-  </style>
 
+  <!-- Remove background for this page -->
+  <style>
+    body { background: white !important; }
+  </style>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -35,6 +33,14 @@
   </nav>
 </header>
 
+<!-- Header size calculator -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const h = document.querySelector(".gov-header").offsetHeight;
+  document.documentElement.style.setProperty("--header-height", h + "px");
+});
+</script>
+
 <div class="complaints-layout">
 
   <div class="filter-panel" id="leftPanel">
@@ -47,18 +53,10 @@
   </div>
 
   <div id="collapseToggle" class="collapse-btn">◀</div>
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const h = document.querySelector(".gov-header").offsetHeight;
-    document.documentElement.style.setProperty("--header-height", h + "px");
-});
-</script>
-
 
   <div id="map"></div>
 
 </div>
-
 
 <script src="main.js"></script>
 
