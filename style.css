@@ -1,24 +1,15 @@
-/* --------------------
-   style.css (FINAL)
-   Paste/overwrite your existing style.css
-   -------------------- */
 :root {
-  --header-height: 0px; /* will be set by JS at runtime */
+  --header-height: 0px;
 }
 
-/* base / reset */
-* { box-sizing: border-box; }
+
+
+
 html, body {
-  height: 100%;
-  margin: 0;
-  /* keep document non-scrollable (map + header will manage space) */
-  overflow: hidden;
-  background: #ffffff;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #1a1a1a;
+    height: 100%;
+    overflow: hidden;
 }
-
-/* Pages that should show background (index.html, complaint.html) will add class="has-bg" to <body> */
+/* RESET + BACKGROUND IMAGE */
 body.has-bg {
   background: url("sus.jpg") no-repeat center center;
   background-size: cover;
@@ -26,7 +17,12 @@ body.has-bg {
   backdrop-filter: brightness(0.88);
 }
 
-/* HEADER (single definition, fixed) */
+body {
+  background: white; /* Default background for pages WITHOUT image */
+}
+
+
+/* HEADER */
 .gov-header {
   background: rgba(0, 87, 183, 0.95);
   color: white;
@@ -41,12 +37,14 @@ body.has-bg {
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
-/* header title and nav */
+
 .gov-header h1 {
   margin: 0;
   font-size: 28px;
   font-weight: 600;
 }
+
+/* NAVIGATION */
 nav { margin-top: 10px; }
 nav a {
   color: white;
@@ -58,38 +56,99 @@ nav a {
 }
 nav a.active, nav a:hover { background: #004095; }
 
-/* generic cards/forms (kept from your original file) */
-.section-card { width: 900px; max-width: 90%; margin: 30px auto; background: rgba(255,255,255,0.92); padding:25px; border-radius:15px; box-shadow:0 3px 15px rgba(0,0,0,0.15); }
-.quote-box blockquote { background:#e6f0ff; padding:20px; border-left:6px solid #0057b7; font-style:italic; font-size:18px; }
-.container { width:100%; display:flex; justify-content:center; }
-.form-card { max-width:550px; width:100%; background: rgba(255,255,255,0.95); padding:25px; margin-top:30px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.2); }
-label { font-weight:600; margin-top:12px; display:block; }
-input, select, textarea { width:100%; padding:12px; margin-top:5px; border-radius:6px; border:1px solid #c7cdd4; font-size:15px; }
-.submit-btn { margin:20px auto; display:block; padding:14px; background:#0057b7; color:white; border:none; border-radius:6px; font-size:16px; cursor:pointer; }
-.submit-btn:hover { background:#004095; }
-.preview img { width:90px; margin-top:12px; margin-right:8px; border-radius:6px; border:1px solid #ccc; }
+/* DASHBOARD CARDS */
+.section-card {
+  width: 900px;
+  max-width: 90%;
+  margin: 30px auto;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+}
+
+.quote-box blockquote {
+  background: #e6f0ff;
+  padding: 20px;
+  border-left: 6px solid #0057b7;
+  font-style: italic;
+  font-size: 18px;
+}
+
+/* FORM CENTERING */
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* FORM CARD */
+.form-card {
+  max-width: 550px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  margin-top: 30px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+label { font-weight: 600; margin-top: 12px; display: block; }
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #c7cdd4;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.submit-btn {
+  margin: 20px auto;
+  display: block;
+  padding: 14px;
+  background: #0057b7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.submit-btn:hover { background: #004095; }
+
+/* IMAGE PREVIEW */
+.preview img {
+  width: 90px;
+  margin-top: 12px;
+  margin-right: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
-/* .complaints-layout will be positioned using the runtime CSS variable (--header-height)
-   The JS below sets --header-height to the actual header height and also assigns layout.style.top
-*/
 .complaints-layout {
   position: fixed;
-  top: 0; /* start at 0 so there is no initial gap; JS will set top exactly after header */
+  top: var(--header-height);
   left: 0;
   right: 0;
   bottom: 0;
   display: flex;
   overflow: hidden;
-  background: #ffffff; /* map will sit on top */
 }
+
+
+
+
+
+
 
 /* LEFT FILTER PANEL */
 .filter-panel {
   position: relative;
   z-index: 10;
   width: 200px;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255, 255, 255, 0.95);
   padding: 20px 10px;
   border-right: 2px solid #d3dce6;
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
@@ -120,31 +179,52 @@ input, select, textarea { width:100%; padding:12px; margin-top:5px; border-radiu
   font-weight: 600;
 }
 .filter-panel .filter-btn.active,
-.filter-panel .filter-btn:hover { background: #0057b7; color: white; }
+.filter-panel .filter-btn:hover {
+  background: #0057b7;
+  color: white;
+}
 
-/* COLLAPSE BUTTON */
+/* COLLAPSE BUTTON (PATCHED) */
 .collapse-btn {
   position: absolute;
-  left: 200px;
+  left: 200px; /* beside panel */
   top: 50%;
   transform: translateY(-50%);
   background: #0057b7;
   color: white;
-  width: 28px; height: 28px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; font-size:16px; z-index:9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 9999;
 }
-.filter-panel.collapsed + .collapse-btn { left: 0; transform: translateY(-50%) rotate(180deg); }
 
-/* MAP AREA - make it fill the remaining area inside .complaints-layout */
+/* Move arrow when collapsed */
+.filter-panel.collapsed + .collapse-btn {
+  left: 0;
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* MAP AREA */
 #map {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
-/* When layout has collapsed-map, the map simply occupies more width (no height change) */
-.complaints-layout.collapsed-map #map { width: 100%; }
+
+/* EXPAND MAP WHEN COLLAPSED */
+.complaints-layout.collapsed-map #map {
+  width: 100%;
+}
 
 button { cursor: pointer; }
-.leaflet-popup-content, .leaflet-popup { pointer-events: auto !important; }
+.leaflet-popup-content, .leaflet-popup {
+  pointer-events: auto !important;
+}
