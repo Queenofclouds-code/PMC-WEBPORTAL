@@ -2,27 +2,24 @@
    Global Variables
 ======================= */
 :root {
-  --header-height: 0px; /* Updated dynamically from JS */
+  --header-height: 0px; /* computed dynamically */
 }
 
 /* =======================
-   Base Styles
+   Base & Reset
 ======================= */
 * { box-sizing: border-box; }
 
 html, body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden; /* prevent scroll */
   font-family: "Segoe UI", Arial, sans-serif;
+  color: #1a1a1a;
+  background: white; /* default background (for view-complaints) */
 }
 
-/* Default background (white for view-complaints) */
-body {
-  background: white;
-}
-
-/* Background only for pages that add class="has-bg" */
+/* Background only on pages with class="has-bg" */
 body.has-bg {
   background: url("sus.jpg") no-repeat center center;
   background-size: cover;
@@ -31,13 +28,13 @@ body.has-bg {
 }
 
 /* =======================
-   HEADER
+   HEADER (Fixed)
 ======================= */
 .gov-header {
   background: rgba(0, 87, 183, 0.95);
   color: white;
   width: 100%;
-  padding: 10px 10px;   /* Reduced padding for stable height */
+  padding: 10px 12px; /* stable height */
   text-align: center;
   position: fixed;
   top: 0;
@@ -47,18 +44,16 @@ body.has-bg {
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
-/* Remove collapsing margins */
 .gov-header h1 {
   margin: 0 !important;
-  padding: 0;
+  padding: 0 !important;
   font-size: 26px;
   font-weight: 600;
 }
 
 .gov-header nav {
-  margin: 0 !important;
-  padding: 0;
-  margin-top: 6px !important;
+  margin: 5px 0 0 0 !important;
+  padding: 0 !important;
 }
 
 nav a {
@@ -69,69 +64,30 @@ nav a {
   border-radius: 6px;
   margin: 0 4px;
 }
-nav a.active, nav a:hover {
-  background: #004095;
-}
+nav a.active, nav a:hover { background: #004095; }
 
 /* =======================
-   MAIN APP / FORMS (unchanged)
+   FORM & CONTENT (unchanged)
 ======================= */
 .section-card {
   width: 900px;
   max-width: 90%;
   margin: 30px auto;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255,255,255,0.92);
   padding: 25px;
   border-radius: 15px;
   box-shadow: 0 3px 15px rgba(0,0,0,0.15);
 }
 
-.container { display: flex; justify-content: center; width: 100%; }
-
-.form-card {
-  max-width: 550px;
-  background: rgba(255,255,255,0.95);
-  padding: 25px;
-  margin-top: 30px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-}
-
-label { font-weight: 600; margin-top: 12px; display: block; }
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #c7cdd4;
-}
-
-.submit-btn {
-  margin: 20px auto;
-  padding: 14px;
-  background: #0057b7;
-  color: white;
-  width: 100%;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-}
-.submit-btn:hover { background: #004095; }
-
-.preview img {
-  width: 90px;
-  margin-top: 12px;
-  margin-right: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
+.container { display: flex; justify-content: center; }
+.form-card { max-width: 550px; width: 100%; background: rgba(255,255,255,0.95); padding:25px; border-radius:12px; }
 
 /* =======================
-   VIEW-COMPLAINTS LAYOUT (Final)
+   VIEW COMPLAINTS LAYOUT
 ======================= */
 .complaints-layout {
   position: fixed;
-  top: var(--header-height);   /* Dynamic height */
+  top: var(--header-height);  /* dynamic height from JS */
   left: 0;
   right: 0;
   bottom: 0;
@@ -140,7 +96,7 @@ input, select, textarea {
   background: white;
 }
 
-/* LEFT PANEL */
+/* LEFT FILTER PANEL */
 .filter-panel {
   width: 200px;
   background: rgba(255,255,255,0.95);
@@ -152,31 +108,19 @@ input, select, textarea {
   height: 100%;
   z-index: 10;
 }
+.filter-panel.collapsed { width: 0; padding: 0; border-right: none; }
 
-.filter-panel.collapsed {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
-  border-right: none;
-}
-
-/* FILTER BUTTON */
+/* FILTER BUTTONS */
 .filter-btn {
   background: #e6eef8;
   border: none;
-  padding: 10px 12px;
+  padding: 10px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
   color: #003d82;
-  text-align: left;
   font-weight: 600;
 }
-.filter-btn.active,
-.filter-btn:hover {
-  background: #0057b7;
-  color: white;
-}
+.filter-btn.active, .filter-btn:hover { background:#0057b7; color:white; }
 
 /* COLLAPSE BUTTON */
 .collapse-btn {
@@ -189,10 +133,10 @@ input, select, textarea {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
   z-index: 9999;
 }
 
@@ -201,13 +145,15 @@ input, select, textarea {
   transform: translateY(-50%) rotate(180deg);
 }
 
-/* MAP FULL-SCREEN */
+/* MAP FULL SCREEN */
 #map {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
-/* Popup fix */
 .leaflet-popup-content, .leaflet-popup {
   pointer-events: auto !important;
 }
