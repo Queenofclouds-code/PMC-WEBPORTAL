@@ -47,6 +47,13 @@
   </div>
 
   <div id="collapseToggle" class="collapse-btn">◀</div>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const h = document.querySelector(".gov-header").offsetHeight;
+    document.documentElement.style.setProperty("--header-height", h + "px");
+});
+</script>
+
 
   <div id="map"></div>
 
