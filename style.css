@@ -3,15 +3,17 @@ html, body {
     overflow: hidden;
 }
 /* RESET + BACKGROUND IMAGE */
-body {
-  margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #1a1a1a;
+body.has-bg {
   background: url("sus.jpg") no-repeat center center;
-  background-attachment: scroll;
   background-size: cover;
+  background-attachment: scroll;
   backdrop-filter: brightness(0.88);
 }
+
+body {
+  background: white; /* Default background for pages WITHOUT image */
+}
+
 
 /* HEADER */
 .gov-header {
