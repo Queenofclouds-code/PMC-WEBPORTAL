@@ -6,8 +6,7 @@
   <title>PMC Complaint Form</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="has-bg">
-
+<body>
 
 <header class="gov-header">
   <h1>Register a Complaint</h1>
@@ -26,8 +25,10 @@
     <label>Full Name</label>
     <input type="text" id="fullname" required pattern="[A-Za-z ]{3,}" title="Enter a valid name (letters only)">
 
+
     <label>Phone Number</label>
     <input type="tel" id="phone" required pattern="[0-9]{10}" maxlength="10" title="Enter a valid 10-digit phone number">
+
 
     <label>Complaint Type</label>
     <select id="complaintType" required>
@@ -50,8 +51,11 @@
       <option>High</option>
     </select>
 
-    <label>Upload Images</label>
-    <input type="file" id="files" accept="image/*" multiple />
+    <label>Upload Images / Videos</label>
+    <input type="file" id="files" accept="image/*,video/*" multiple />
+
+    <button type="button" id="openCameraBtn" class="camera-btn">📸 Capture Photo Using Camera</button>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" />
 
     <div class="preview" id="preview"></div>
 
@@ -66,7 +70,5 @@
 </div>
 
 <script src="script.js"></script>
-
-
 </body>
 </html>
