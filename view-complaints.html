@@ -6,12 +6,13 @@
   <title>View Complaints</title>
 
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Ensure this page has no page-level background (we use body.has-bg on other pages) -->
-  <style>
-    /* guarantee no background here */
-    body { background: none !important; background-color: #ffffff !important; }
+    <style>
+    body {
+      background: none !important;
+      background-color: #ffffff !important;
+    }
   </style>
+
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -34,31 +35,6 @@
   </nav>
 </header>
 
-<!-- Important: this script runs immediately and sets the top of the layout before the map is rendered -->
-<script>
-  // run as soon as DOM exists
-  (function() {
-    function setLayoutTop() {
-      var header = document.querySelector('.gov-header');
-      var layout = document.querySelector('.complaints-layout');
-      if (!header || !layout) return;
-
-      var h = header.getBoundingClientRect().height || header.offsetHeight || 0;
-      // set CSS variable
-      document.documentElement.style.setProperty('--header-height', h + 'px');
-      // set layout top directly to avoid a flicker/gap
-      layout.style.top = h + 'px';
-
-      // If the map exists globally later, we will call invalidateSize in main.js after map creation
-    }
-
-    // call now (script is placed before layout in the DOM, but header exists)
-    window.addEventListener('DOMContentLoaded', setLayoutTop);
-    // also on resize
-    window.addEventListener('resize', setLayoutTop);
-  })();
-</script>
-
 <div class="complaints-layout">
 
   <div class="filter-panel" id="leftPanel">
@@ -71,12 +47,19 @@
   </div>
 
   <div id="collapseToggle" class="collapse-btn">◀</div>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const h = document.querySelector(".gov-header").offsetHeight;
+    document.documentElement.style.setProperty("--header-height", h + "px");
+});
+</script>
+
 
   <div id="map"></div>
 
 </div>
 
-<!-- Load your map code after layout exists -->
+
 <script src="main.js"></script>
 
 </body>
