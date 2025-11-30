@@ -1,3 +1,10 @@
+:root {
+  --header-height: 0px;
+}
+
+
+
+
 html, body {
     height: 100%;
     overflow: hidden;
@@ -121,8 +128,8 @@ input, select, textarea {
 
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 .complaints-layout {
-  position: absolute;
-  top: 150px;   /* adjust if needed by +5 or -5 */
+  position: fixed;
+  top: var(--header-height);
   left: 0;
   right: 0;
   bottom: 0;
