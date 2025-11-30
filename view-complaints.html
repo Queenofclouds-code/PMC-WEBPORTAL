@@ -7,21 +7,21 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Remove background image for this page only -->
-  <style>
-    body {
-      background: white !important;
-    }
-  </style>
-
-  <!-- Leaflet -->
+  <!-- LEAFLET -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!-- Marker Cluster -->
+  <!-- MARKER CLUSTER -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+  <style>
+    #map {
+      width: 100%;
+      height: calc(100vh - 140px);
+    }
+  </style>
 </head>
 
 <body>
@@ -35,23 +35,10 @@
   </nav>
 </header>
 
-<script>
-/* Dynamically calculate header height so map starts EXACTLY below it */
-document.addEventListener("DOMContentLoaded", () => {
-  const headerHeight = document.querySelector(".gov-header").offsetHeight;
-  document.documentElement.style.setProperty("--header-height", headerHeight + "px");
-
-  // In case of collapse/expand actions later
-  window.addEventListener("resize", () => {
-    const h = document.querySelector(".gov-header").offsetHeight;
-    document.documentElement.style.setProperty("--header-height", h + "px");
-  });
-});
-</script>
-
 <div class="complaints-layout">
 
-  <div class="filter-panel" id="leftPanel">
+  <!-- LEFT FILTER PANEL -->
+  <div class="filter-panel">
     <button class="filter-btn active" data-type="All">All</button>
     <button class="filter-btn" data-type="Garbage">Garbage</button>
     <button class="filter-btn" data-type="Street Light">Street Light</button>
@@ -60,13 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
     <button class="filter-btn" data-type="Other">Other</button>
   </div>
 
-  <div id="collapseToggle" class="collapse-btn">◀</div>
-
+  <!-- MAP -->
   <div id="map"></div>
 
 </div>
 
 <script src="main.js"></script>
-
 </body>
 </html>
