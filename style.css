@@ -108,12 +108,12 @@ input, select, textarea {
 
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
 .complaints-layout {
-  display: flex;
-  position: relative; /* important for absolute arrow */
-  width: 100%;
-  height: calc(100vh - 165px);
-  overflow: hidden;
+    flex: 1;
+    height: calc(100vh - 130px);
+    min-height: calc(100vh - 130px);
+    display: flex;
 }
+
 
 /* LEFT FILTER PANEL */
 .filter-panel {
