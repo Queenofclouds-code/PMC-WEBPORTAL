@@ -7,9 +7,11 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Remove background for this page -->
+  <!-- Remove background image for this page only -->
   <style>
-    body { background: white !important; }
+    body {
+      background: white !important;
+    }
   </style>
 
   <!-- Leaflet -->
@@ -33,23 +35,29 @@
   </nav>
 </header>
 
-<!-- Header size calculator -->
 <script>
+/* Dynamically calculate header height so map starts EXACTLY below it */
 document.addEventListener("DOMContentLoaded", () => {
-  const h = document.querySelector(".gov-header").offsetHeight;
-  document.documentElement.style.setProperty("--header-height", h + "px");
+  const headerHeight = document.querySelector(".gov-header").offsetHeight;
+  document.documentElement.style.setProperty("--header-height", headerHeight + "px");
+
+  // In case of collapse/expand actions later
+  window.addEventListener("resize", () => {
+    const h = document.querySelector(".gov-header").offsetHeight;
+    document.documentElement.style.setProperty("--header-height", h + "px");
+  });
 });
 </script>
 
 <div class="complaints-layout">
 
   <div class="filter-panel" id="leftPanel">
-      <button class="filter-btn active" data-type="All">All</button>
-      <button class="filter-btn" data-type="Garbage">Garbage</button>
-      <button class="filter-btn" data-type="Street Light">Street Light</button>
-      <button class="filter-btn" data-type="Water Supply">Water Supply</button>
-      <button class="filter-btn" data-type="Sewage">Sewage</button>
-      <button class="filter-btn" data-type="Other">Other</button>
+    <button class="filter-btn active" data-type="All">All</button>
+    <button class="filter-btn" data-type="Garbage">Garbage</button>
+    <button class="filter-btn" data-type="Street Light">Street Light</button>
+    <button class="filter-btn" data-type="Water Supply">Water Supply</button>
+    <button class="filter-btn" data-type="Sewage">Sewage</button>
+    <button class="filter-btn" data-type="Other">Other</button>
   </div>
 
   <div id="collapseToggle" class="collapse-btn">◀</div>
