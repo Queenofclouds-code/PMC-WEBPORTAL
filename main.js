@@ -121,29 +121,44 @@ function loadComplaints(filterType = "All") {
         markers.addLayer(marker);
       });
 
-     // ⭐⭐⭐ ALWAYS ZOOM TO THE NEWEST COMPLAINT (CLUSTER-SAFE FIX)
+    // ⭐⭐⭐ ALWAYS ZOOM TO THE NEWEST COMPLAINT — 100% reliable with clusters
 if (!window.hasZoomedOnce && data.complaints.length > 0) {
+
     const newest = data.complaints[0];
+    const ny = Number(newest.latitude);
+    const nx = Number(newest.longitude);
 
-    setTimeout(() => {
-        let newestPos = null;
+    if (!ny || !nx) {
+        console.warn("Newest complaint has invalid coordinates:", newest);
+    } else {
+        // TEMP MARKER – ensures MarkerCluster can reveal it
+        const tempMarker = L.marker([ny, nx]);
 
-        markers.eachLayer(layer => {
-            const pos = layer.getLatLng();
+        // lightweight popup
+        tempMarker.bindPopup(
+            `<b>${newest.complaint_type}</b><br>
+             <small>${newest.fullname} • ${newest.created_at}</small>`
+        );
 
-            if (
-                Math.abs(Number(newest.latitude) - pos.lat) < 0.00001 &&
-                Math.abs(Number(newest.longitude) - pos.lng) < 0.00001
-            ) {
-                newestPos = pos;
+        // Add ONLY this temporary marker so MarkerCluster can expand to it
+        markers.addLayer(tempMarker);
+
+        // Zoom to show this marker inside the cluster
+        markers.zoomToShowLayer(tempMarker, () => {
+            try {
+                tempMarker.openPopup();
+                map.flyTo([ny, nx], 17, { animate: true });
+                window.hasZoomedOnce = true;
+            } catch (err) {
+                console.error("ZoomToShowLayer error:", err);
             }
         });
 
-        if (newestPos) {
-            map.flyTo(newestPos, 17, { animate: true });
-            window.hasZoomedOnce = true;
-        }
-    }, 600);
+        // Remove temp marker after 8 seconds (optional)
+        setTimeout(() => {
+            try { markers.removeLayer(tempMarker); } catch(e) {}
+        }, 8000);
+    }
 }
 
 
