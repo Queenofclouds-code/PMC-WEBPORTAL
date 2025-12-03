@@ -22,20 +22,15 @@ function refreshMap() {
 window.addEventListener("resize", refreshMap);
 
 // =====================================================
-// COLLAPSIBLE SIDEBAR LOGIC (FINAL)
+// COLLAPSIBLE SIDEBAR LOGIC
 // =====================================================
 const leftPanel = document.getElementById("leftPanel");
 const collapseSidebar = document.getElementById("collapseSidebar");
 
 collapseSidebar.addEventListener("click", () => {
-    leftPanel.classList.toggle("collapsed");
-
-    // Change arrow direction
-    collapseSidebar.textContent =
-      leftPanel.classList.contains("collapsed") ? "▶" : "◀";
-
-    // Resize map
-    refreshMap();
+  leftPanel.classList.toggle("collapsed");
+  collapseSidebar.textContent = leftPanel.classList.contains("collapsed") ? "▶" : "◀";
+  refreshMap();
 });
 
 // =========================
@@ -44,7 +39,7 @@ collapseSidebar.addEventListener("click", () => {
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// Ensure we only auto-zoom once
+// ⭐ Ensure auto-zoom happens ONCE only
 window.hasZoomedOnce = false;
 
 // =========================
@@ -57,20 +52,22 @@ function loadComplaints(filterType = "All") {
       markers.clearLayers();
       const grouped = {};
 
-      // ⭐ Auto-zoom only once
-      // ⭐ Auto-zoom only once — ALWAYS zoom to NEWEST complaint
+      // ======================================================
+      // ⭐ FIXED: ALWAYS ZOOM TO NEWEST (created_at DESC)
+      // ======================================================
       if (!window.hasZoomedOnce && data.complaints.length > 0) {
-        const newest = data.complaints.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        )[0];
+        const newest = data.complaints[0];   // API already returns DESC
+
         if (newest.latitude && newest.longitude) {
-        map.flyTo([Number(newest.latitude), Number(newest.longitude)], 17);
-        window.hasZoomedOnce = true;
+          map.flyTo(
+            [Number(newest.latitude), Number(newest.longitude)],
+            17
+          );
+          window.hasZoomedOnce = true;
+        }
       }
-    }
 
-
-      // Group complaints
+      // Group complaints by lat/lng
       data.complaints.forEach(c => {
         if (!c.latitude || !c.longitude) return;
         const key = `${c.latitude},${c.longitude}`;
@@ -83,6 +80,7 @@ function loadComplaints(filterType = "All") {
         let items = grouped[key];
         const [lat, lng] = key.split(",").map(Number);
 
+        // Filtering
         if (filterType !== "All") {
           items = items.filter(x => x.complaint_type === filterType);
           if (!items.length) return;
@@ -116,6 +114,7 @@ function loadComplaints(filterType = "All") {
 
           marker.getPopup().setContent(html);
 
+          // Button handlers
           setTimeout(() => {
             const next = document.getElementById("nextBtn");
             const prev = document.getElementById("prevBtn");
@@ -145,6 +144,7 @@ function loadComplaints(filterType = "All") {
     .catch(err => console.error("Failed to load complaints:", err));
 }
 
+// Initial load
 loadComplaints();
 
 // FILTER BUTTONS
@@ -152,9 +152,6 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-
     loadComplaints(btn.dataset.type);
   });
 });
-
-refreshMap();
