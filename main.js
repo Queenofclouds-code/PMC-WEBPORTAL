@@ -122,22 +122,31 @@ function loadComplaints(filterType = "All") {
       });
 
       // ⭐⭐⭐ AFTER ALL MARKERS ADDED — ZOOM TO NEWEST
-      if (!window.hasZoomedOnce && data.complaints.length > 0) {
+      // ⭐⭐⭐ ALWAYS ZOOM TO THE NEWEST COMPLAINT (CLUSTER-SAFE FIX)
+if (!window.hasZoomedOnce && data.complaints.length > 0) {
+    const newest = data.complaints[0];
 
-        // API is already sorted DESC → first item is newest
-        const newest = data.complaints[0];
+    // Wait for clusters to be fully drawn
+    setTimeout(() => {
+        let newestPos = null;
 
-        // Wait for marker cluster to finish layout
-        setTimeout(() => {
-          if (newest.latitude && newest.longitude) {
-            map.flyTo(
-              [Number(newest.latitude), Number(newest.longitude)],
-              17
-            );
+        markers.eachLayer(layer => {
+            const pos = layer.getLatLng();
+            if (
+                Number(newest.latitude) === pos.lat &&
+                Number(newest.longitude) === pos.lng
+            ) {
+                newestPos = pos;
+            }
+        });
+
+        if (newestPos) {
+            map.flyTo(newestPos, 17, { animate: true });
             window.hasZoomedOnce = true;
-          }
-        }, 500);
-      }
+        }
+    }, 600);
+}
+
 
       refreshMap();
     })
