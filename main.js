@@ -121,20 +121,19 @@ function loadComplaints(filterType = "All") {
         markers.addLayer(marker);
       });
 
-      // ⭐⭐⭐ AFTER ALL MARKERS ADDED — ZOOM TO NEWEST
-      // ⭐⭐⭐ ALWAYS ZOOM TO THE NEWEST COMPLAINT (CLUSTER-SAFE FIX)
+     // ⭐⭐⭐ ALWAYS ZOOM TO THE NEWEST COMPLAINT (CLUSTER-SAFE FIX)
 if (!window.hasZoomedOnce && data.complaints.length > 0) {
     const newest = data.complaints[0];
 
-    // Wait for clusters to be fully drawn
     setTimeout(() => {
         let newestPos = null;
 
         markers.eachLayer(layer => {
             const pos = layer.getLatLng();
+
             if (
-                Number(newest.latitude) === pos.lat &&
-                Number(newest.longitude) === pos.lng
+                Math.abs(Number(newest.latitude) - pos.lat) < 0.00001 &&
+                Math.abs(Number(newest.longitude) - pos.lng) < 0.00001
             ) {
                 newestPos = pos;
             }
@@ -146,6 +145,7 @@ if (!window.hasZoomedOnce && data.complaints.length > 0) {
         }
     }, 600);
 }
+
 
 
       refreshMap();
