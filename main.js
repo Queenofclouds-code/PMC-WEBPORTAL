@@ -121,47 +121,23 @@ function loadComplaints(filterType = "All") {
         markers.addLayer(marker);
       });
 
-    // ⭐⭐⭐ ALWAYS ZOOM TO THE NEWEST COMPLAINT — 100% reliable with clusters
-if (!window.hasZoomedOnce && data.complaints.length > 0) {
+      // ⭐⭐⭐ AFTER ALL MARKERS ADDED — ZOOM TO NEWEST
+      if (!window.hasZoomedOnce && data.complaints.length > 0) {
 
-    const newest = data.complaints[0];
-    const ny = Number(newest.latitude);
-    const nx = Number(newest.longitude);
+        // API is already sorted DESC → first item is newest
+        const newest = data.complaints[0];
 
-    if (!ny || !nx) {
-        console.warn("Newest complaint has invalid coordinates:", newest);
-    } else {
-        // TEMP MARKER – ensures MarkerCluster can reveal it
-        const tempMarker = L.marker([ny, nx]);
-
-        // lightweight popup
-        tempMarker.bindPopup(
-            `<b>${newest.complaint_type}</b><br>
-             <small>${newest.fullname} • ${newest.created_at}</small>`
-        );
-
-        // Add ONLY this temporary marker so MarkerCluster can expand to it
-        markers.addLayer(tempMarker);
-
-        // Zoom to show this marker inside the cluster
-        markers.zoomToShowLayer(tempMarker, () => {
-            try {
-                tempMarker.openPopup();
-                map.flyTo([ny, nx], 17, { animate: true });
-                window.hasZoomedOnce = true;
-            } catch (err) {
-                console.error("ZoomToShowLayer error:", err);
-            }
-        });
-
-        // Remove temp marker after 8 seconds (optional)
+        // Wait for marker cluster to finish layout
         setTimeout(() => {
-            try { markers.removeLayer(tempMarker); } catch(e) {}
-        }, 8000);
-    }
-}
-
-
+          if (newest.latitude && newest.longitude) {
+            map.flyTo(
+              [Number(newest.latitude), Number(newest.longitude)],
+              17
+            );
+            window.hasZoomedOnce = true;
+          }
+        }, 500);
+      }
 
       refreshMap();
     })
