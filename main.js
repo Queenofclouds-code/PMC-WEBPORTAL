@@ -58,13 +58,17 @@ function loadComplaints(filterType = "All") {
       const grouped = {};
 
       // ⭐ Auto-zoom only once
+      // ⭐ Auto-zoom only once — ALWAYS zoom to NEWEST complaint
       if (!window.hasZoomedOnce && data.complaints.length > 0) {
-        const latest = data.complaints[0];
-        if (latest.latitude && latest.longitude) {
-          map.flyTo([Number(latest.latitude), Number(latest.longitude)], 17);
-          window.hasZoomedOnce = true;
-        }
+        const newest = data.complaints.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        )[0];
+        if (newest.latitude && newest.longitude) {
+        map.flyTo([Number(newest.latitude), Number(newest.longitude)], 17);
+        window.hasZoomedOnce = true;
       }
+    }
+
 
       // Group complaints
       data.complaints.forEach(c => {
