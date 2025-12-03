@@ -39,7 +39,6 @@ collapseSidebar.addEventListener("click", () => {
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
-// ⭐ Ensure auto-zoom happens ONCE only
 window.hasZoomedOnce = false;
 
 // =========================
@@ -52,22 +51,7 @@ function loadComplaints(filterType = "All") {
       markers.clearLayers();
       const grouped = {};
 
-      // ======================================================
-      // ⭐ FIXED: ALWAYS ZOOM TO NEWEST (created_at DESC)
-      // ======================================================
-      if (!window.hasZoomedOnce && data.complaints.length > 0) {
-        const newest = data.complaints[0];   // API already returns DESC
-
-        if (newest.latitude && newest.longitude) {
-          map.flyTo(
-            [Number(newest.latitude), Number(newest.longitude)],
-            17
-          );
-          window.hasZoomedOnce = true;
-        }
-      }
-
-      // Group complaints by lat/lng
+      // Group complaints
       data.complaints.forEach(c => {
         if (!c.latitude || !c.longitude) return;
         const key = `${c.latitude},${c.longitude}`;
@@ -80,7 +64,6 @@ function loadComplaints(filterType = "All") {
         let items = grouped[key];
         const [lat, lng] = key.split(",").map(Number);
 
-        // Filtering
         if (filterType !== "All") {
           items = items.filter(x => x.complaint_type === filterType);
           if (!items.length) return;
@@ -114,7 +97,6 @@ function loadComplaints(filterType = "All") {
 
           marker.getPopup().setContent(html);
 
-          // Button handlers
           setTimeout(() => {
             const next = document.getElementById("nextBtn");
             const prev = document.getElementById("prevBtn");
@@ -139,12 +121,29 @@ function loadComplaints(filterType = "All") {
         markers.addLayer(marker);
       });
 
+      // ⭐⭐⭐ AFTER ALL MARKERS ADDED — ZOOM TO NEWEST
+      if (!window.hasZoomedOnce && data.complaints.length > 0) {
+
+        // API is already sorted DESC → first item is newest
+        const newest = data.complaints[0];
+
+        // Wait for marker cluster to finish layout
+        setTimeout(() => {
+          if (newest.latitude && newest.longitude) {
+            map.flyTo(
+              [Number(newest.latitude), Number(newest.longitude)],
+              17
+            );
+            window.hasZoomedOnce = true;
+          }
+        }, 500);
+      }
+
       refreshMap();
     })
     .catch(err => console.error("Failed to load complaints:", err));
 }
 
-// Initial load
 loadComplaints();
 
 // FILTER BUTTONS
@@ -152,6 +151,7 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+    window.hasZoomedOnce = false; // reset on filter
     loadComplaints(btn.dataset.type);
   });
 });
