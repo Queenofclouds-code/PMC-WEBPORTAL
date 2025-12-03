@@ -59,15 +59,55 @@ function loadComplaints(filterType = "All") {
 
       // ⭐ Auto-zoom only once
       // ⭐ Auto-zoom only once — ALWAYS zoom to NEWEST complaint
-      if (!window.hasZoomedOnce && data.complaints.length > 0) {
-        const newest = data.complaints.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        )[0];
-        if (newest.latitude && newest.longitude) {
-        map.flyTo([Number(newest.latitude), Number(newest.longitude)], 17);
-        window.hasZoomedOnce = true;
-      }
-    }
+      // assume `data.complaints` is the array from backend
+if (!data.complaints || data.complaints.length === 0) return;
+
+// 1) ensure newest-first order (not strictly required here but good)
+data.complaints.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+// 2) create markers array and add to cluster
+const markers = [];
+data.complaints.forEach(c => {
+  const lat = Number(c.latitude);
+  const lng = Number(c.longitude);
+  if (!lat || !lng) return;
+
+  // create marker and attach metadata (timestamp/id)
+  const marker = L.marker([lat, lng], {
+    title: c.fullname || '',
+    // store metadata so we can find it later
+    _complaintId: c.id,
+    _complaintTimestamp: new Date(c.created_at).getTime()
+  });
+
+  // optional: bind popup etc.
+  marker.bindPopup(`<b>${c.fullname}</b><br>${c.description || ''}`);
+
+  markers.push(marker);
+  clusterGroup.addLayer(marker); // or markersLayer.addLayer(marker) depending on your variable
+});
+
+// 3) add clusterGroup to map (if not already)
+if (!map.hasLayer(clusterGroup)) {
+  clusterGroup.addTo(map);
+}
+
+// 4) find the newest marker (highest timestamp)
+const newestMarker = markers.reduce((best, m) => {
+  if (!best) return m;
+  return (m.options._complaintTimestamp || 0) > (best.options._complaintTimestamp || 0) ? m : best;
+}, null);
+
+if (newestMarker) {
+  // Use zoomToShowLayer so cluster expands and then we fly to the single marker
+  clusterGroup.zoomToShowLayer(newestMarker, () => {
+    const latlng = newestMarker.getLatLng();
+    map.flyTo([latlng.lat, latlng.lng], 17, { animate: true });
+    newestMarker.openPopup(); // optional: open popup
+    window.hasZoomedOnce = true;
+  });
+}
+
 
 
       // Group complaints
