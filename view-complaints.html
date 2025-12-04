@@ -39,13 +39,35 @@
 <div class="complaints-layout">
 
   <div class="filter-panel" id="leftPanel">
-    <button class="filter-btn active" data-type="All">All</button>
-    <button class="filter-btn" data-type="Garbage">Garbage</button>
-    <button class="filter-btn" data-type="Street Light">Street Light</button>
-    <button class="filter-btn" data-type="Water Supply">Water Supply</button>
-    <button class="filter-btn" data-type="Sewage">Sewage</button>
-    <button class="filter-btn" data-type="Other">Other</button>
-  </div>
+
+  <label class="filter-label">Complaint Type</label>
+  <select id="filterType" class="filter-select">
+    <option value="All">All</option>
+    <option value="Garbage">Garbage</option>
+    <option value="Street Light">Street Light</option>
+    <option value="Water Supply">Water Supply</option>
+    <option value="Sewage">Sewage</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <label class="filter-label">Status</label>
+  <select id="filterStatus" class="filter-select">
+    <option value="All">All</option>
+    <option value="pending">Pending</option>
+    <option value="in-progress">In Progress</option>
+    <option value="completed">Completed</option>
+  </select>
+
+  <label class="filter-label">Urgency</label>
+  <select id="filterUrgency" class="filter-select">
+    <option value="All">All</option>
+    <option value="Low">Low</option>
+    <option value="Medium">Medium</option>
+    <option value="High">High</option>
+  </select>
+
+</div>
+
 
   <div id="collapseSidebar" class="sidebar-toggle">◀</div>
 
