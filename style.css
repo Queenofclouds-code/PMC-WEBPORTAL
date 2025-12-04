@@ -128,15 +128,26 @@ input, select, textarea {
   position: relative;
   z-index: 10;
   width: 200px;
-  background: rgba(255, 255, 255, 0.95);
+  background: #0057b7;
   padding: 20px 10px;
   border-right: 2px solid #d3dce6;
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0px;
   height: 100%;
 }
+
+/* FILTER DROPDOWN SIZE + SPACING */
+.filter-select {
+  width: 100%;
+  padding: 6px 8px;       /* reduces box height */
+  font-size: 13px;        /* reduces text + overall size */
+  border-radius: 6px;
+  border: 1px solid #c7cdd4;
+  margin-bottom: 6px;     /* reduces space between filters */
+}
+
 
 /* COLLAPSED PANEL */
 .filter-panel.collapsed {
@@ -333,24 +344,4 @@ button { cursor: pointer; }
   color: #444;
 }
 
-.filter-label {
-  margin-top: 10px;
-  font-weight: bold;
-  font-size: 14px;
-  color: #003f8a;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #b3c2d1;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-.filter-select:focus {
-  border-color: #0057b7;
-  box-shadow: 0 0 0 2px rgba(0, 87, 183, 0.2);
-  outline: none;
-}
 
