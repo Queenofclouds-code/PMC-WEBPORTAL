@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pune Municipal Corporation Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
 </head>
 
 <body>
@@ -13,6 +14,7 @@
   <h1>Pune Municipal Corporation Dashboard</h1>
   <nav>
     <a href="index.html" class="active">Home</a>
+    <a href="#" onclick="openSigninModal()">Sign In</a>
     <a href="complaint.html">Complaint Form</a>
     <a href="view-complaints.html">View Complaints</a>
   </nav>
@@ -20,10 +22,7 @@
 
 <section class="section-card">
   <h2>About PMC</h2>
-  <p>
-    Pune Municipal Corporation (PMC) is committed to enhancing the quality of civic life,
-    improving infrastructure, and providing transparent and efficient public services.
-  </p>
+  <p>Pune Municipal Corporation (PMC)…</p>
 </section>
 
 <section class="section-card">
@@ -51,24 +50,32 @@
 <section class="section-card quote-box">
   <h2>PMC Mission Statement</h2>
   <blockquote>
-    “A cleaner, greener, smarter Pune — where development meets sustainability,
-    and citizens come first.”
+    “A cleaner, greener, smarter Pune…”
   </blockquote>
 </section>
 
-<!-- NEW CONTACT SECTION -->
 <section class="section-card">
   <h2>Contact Us</h2>
-
-  <p><strong>Address:</strong><br>
-     101, Sunrise Apartments, 775/3, Dr Ketkar Road,<br>
-     Opp. Kamala Nehru Park Road,<br>
-     Deccan Gymkhana, Pune, Maharashtra 411004
-  </p>
-
+  <p><strong>Address:</strong><br>101, Sunrise Apartments…</p>
   <p><strong>Email:</strong> info@aeronica.in</p>
   <p><strong>Phone:</strong> +91 727 646 9160</p>
 </section>
+
+<!-- SIGN-IN POPUP -->
+<div id="signinModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeSigninModal()">&times;</span>
+    <h2>Sign In</h2>
+
+    <input type="text" id="loginPhone" maxlength="10" placeholder="Enter phone number">
+    <button onclick="sendOTP()">Send OTP</button>
+
+    <div id="otpBox" style="display:none;">
+      <input type="text" id="loginOtp" maxlength="6" placeholder="Enter OTP">
+      <button onclick="verifyOTP()">Verify & Continue</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
