@@ -333,3 +333,24 @@ button { cursor: pointer; }
   color: #444;
 }
 
+.filter-label {
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #003f8a;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #b3c2d1;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.filter-select:focus {
+  border-color: #0057b7;
+  box-shadow: 0 0 0 2px rgba(0, 87, 183, 0.2);
+  outline: none;
+}
+
