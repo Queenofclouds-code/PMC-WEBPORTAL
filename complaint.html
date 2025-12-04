@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PMC Complaint Form</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
+
 <body>
 
 <header class="gov-header">
   <h1>Register a Complaint</h1>
   <nav>
     <a href="index.html">Home</a>
+    <a href="#" onclick="openSigninModal()">Sign In</a>
     <a href="complaint.html" class="active">Complaint Form</a>
     <a href="view-complaints.html">View Complaints</a>
   </nav>
@@ -23,12 +26,10 @@
   <form id="complaintForm" enctype="multipart/form-data">
 
     <label>Full Name</label>
-    <input type="text" id="fullname" required pattern="[A-Za-z ]{3,}" title="Enter a valid name (letters only)">
-
+    <input type="text" id="fullname" required>
 
     <label>Phone Number</label>
-    <input type="tel" id="phone" required pattern="[0-9]{10}" maxlength="10" title="Enter a valid 10-digit phone number">
-
+    <input type="tel" id="phone" required maxlength="10">
 
     <label>Complaint Type</label>
     <select id="complaintType" required>
@@ -64,6 +65,21 @@
   </form>
 
 </div>
+</div>
+
+<!-- SIGN-IN POPUP -->
+<div id="signinModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeSigninModal()">&times;</span>
+    <h2>Sign In</h2>
+    <input type="text" id="loginPhone" maxlength="10" placeholder="Enter phone number">
+    <button onclick="sendOTP()">Send OTP</button>
+
+    <div id="otpBox" style="display:none;">
+      <input type="text" id="loginOtp" maxlength="6" placeholder="Enter OTP">
+      <button onclick="verifyOTP()">Verify & Continue</button>
+    </div>
+  </div>
 </div>
 
 <script src="script.js"></script>
