@@ -128,7 +128,7 @@ input, select, textarea {
   position: relative;
   z-index: 10;
   width: 200px;
-  background: #0057b7;
+  background: rgba(0, 87, 183, 0.95);
   padding: 20px 10px;
   border-right: 2px solid #d3dce6;
   box-shadow: 2px 0 8px rgba(0,0,0,0.1);
