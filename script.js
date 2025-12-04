@@ -142,12 +142,6 @@ if (document.getElementById("complaintForm")) {
         .addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            // Must be logged in (still enforced on submit)
-            if (!localStorage.getItem("user_token")) {
-                window.gotoAfterLogin = "complaint.html";
-                openSigninModal();
-                return;
-            }
 
             await getLiveLocation();
 
