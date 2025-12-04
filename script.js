@@ -1,73 +1,6 @@
-/* =======================
-   SIGN-IN POPUP CONTROL
-======================= */
-function openSigninModal() {
-  const modal = document.getElementById("signinModal");
-  if (modal) modal.style.display = "flex";
-}
-
-function closeSigninModal() {
-  const modal = document.getElementById("signinModal");
-  if (modal) modal.style.display = "none";
-}
-
-/* =======================
-   SEND OTP
-======================= */
-async function sendOTP() {
-  const phone = document.getElementById("loginPhone").value;
-
-  if (phone.length !== 10) {
-    alert("Enter a valid phone number");
-    return;
-  }
-
-  await fetch("/portal/api/auth/send-otp", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ phone })
-  });
-
-  document.getElementById("otpBox").style.display = "block";
-}
-
-/* =======================
-   VERIFY OTP
-======================= */
-async function verifyOTP() {
-  const phone = document.getElementById("loginPhone").value;
-  const otp = document.getElementById("loginOtp").value;
-
-  const res = await fetch("/portal/api/auth/verify-otp", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ phone, otp })
-  });
-
-  const data = await res.json();
-
-  if (!data.token) {
-    alert("Incorrect OTP");
-    return;
-  }
-
-  // Save the JWT
-  localStorage.setItem("user_token", data.token);
-
-  // Close popup
-  closeSigninModal();
-
-  // Redirect user to the intended page
-  if (window.gotoAfterLogin) {
-    window.location.href = window.gotoAfterLogin;
-  }
-}
-
-
-
-/* =======================
-   GET LIVE LOCATION
-======================= */
+// =======================
+// GET LIVE LOCATION
+// =======================
 function getLiveLocation() {
   return new Promise((resolve) => {
     navigator.geolocation.getCurrentPosition(
@@ -82,21 +15,20 @@ function getLiveLocation() {
   });
 }
 
-/* =======================
-   FILE INPUT PREVIEW
-======================= */
+// =======================
+// FILE INPUT ONLY (NO CAMERA)
+// =======================
 const fileInput = document.getElementById("files");
 const preview = document.getElementById("preview");
 
-if (fileInput) {
-  fileInput.addEventListener("change", () => {
-    preview.innerHTML = "<p>✔ Files attached</p>";
-  });
-}
+// No heavy preview to avoid mobile memory lag
+fileInput.addEventListener("change", () => {
+  preview.innerHTML = "<p>✔ Files attached</p>";
+});
 
-/* =======================
-   COMPRESS LARGE IMAGES > 8MB
-======================= */
+// =======================
+// LIGHT COMPRESSION (~2–3MB) ONLY IF FILE > 8MB
+// =======================
 async function compressIfNeeded(file) {
   if (file.size < 8 * 1024 * 1024) return file;
 
@@ -134,58 +66,50 @@ async function compressIfNeeded(file) {
   });
 }
 
-/* =======================
-   SUBMIT COMPLAINT FORM
-======================= */
-if (document.getElementById("complaintForm")) {
-  document.getElementById("complaintForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+// =======================
+// SUBMIT FORM
+// =======================
+document.getElementById("complaintForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    // MUST be logged in to submit
-    if (!localStorage.getItem("user_token")) {
-      window.gotoAfterLogin = "complaint.html";
-      openSigninModal();
-      return;
+  await getLiveLocation();
+
+  const formData = new FormData();
+
+  formData.append("fullname", fullname.value);
+  formData.append("phone", phone.value);
+  formData.append("complaint_type", complaintType.value);
+  formData.append("description", description.value);
+  formData.append("urgency", urgency.value);
+  formData.append("latitude", latitude.value);
+  formData.append("longitude", longitude.value);
+
+  if (fileInput.files.length > 0) {
+    for (let f of fileInput.files) {
+      const optimized = await compressIfNeeded(f);
+      formData.append("files[]", optimized);
     }
+  }
 
-    await getLiveLocation();
+  try {
+    const res = await fetch("https://gist.aeronica.in/portal/api/complaints", {
+      method: "POST",
+      body: formData,
+    });
 
-    const formData = new FormData();
 
-    formData.append("fullname", fullname.value);
-    formData.append("phone", phone.value);
-    formData.append("complaint_type", complaintType.value);
-    formData.append("description", description.value);
-    formData.append("urgency", urgency.value);
-    formData.append("latitude", latitude.value);
-    formData.append("longitude", longitude.value);
+    await res.json();
 
-    if (fileInput && fileInput.files.length > 0) {
-      for (let f of fileInput.files) {
-        const optimized = await compressIfNeeded(f);
-        formData.append("files[]", optimized);
-      }
-    }
+    alert("✔ Complaint submitted!");
 
-    try {
-      const res = await fetch("https://gist.aeronica.in/portal/api/complaints", {
-        method: "POST",
-        body: formData,
-      });
+    // Reset form fields instantly
+    document.getElementById("complaintForm").reset();
+    preview.innerHTML = "";
 
-      await res.json();
+    // Android-compatible page refresh
+    window.location.reload();
 
-      alert("✔ Complaint submitted!");
-
-      // Reset form
-      document.getElementById("complaintForm").reset();
-      preview.innerHTML = "";
-
-      // Android-safe reload
-      window.location.reload();
-
-    } catch (err) {
-      alert("❌ Submission failed");
-    }
-  });
-}
+  } catch (err) {
+    alert("❌ Submission failed");
+  }
+});
