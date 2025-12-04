@@ -6,13 +6,12 @@
   <title>View Complaints</title>
 
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!-- MarkerCluster -->
+  <!-- Marker Cluster -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -24,12 +23,11 @@
 
 <body>
 
-  
 <header class="gov-header">
   <h1>View Registered Complaints</h1>
   <nav>
     <a href="index.html">Home</a>
-    <a href="#" onclick="openSigninModal()">Sign In</a>
+    <a href="login.html" class="signin-btn">Sign In</a>
     <a href="complaint.html">Complaint Form</a>
     <a href="view-complaints.html" class="active">View Complaints</a>
   </nav>
@@ -37,35 +35,22 @@
 
 <div class="complaints-layout">
 
+  <!-- YOUR ORIGINAL SIDEBAR (UNCHANGED) -->
   <div class="filter-panel" id="leftPanel">
-    <button class="filter-btn active" data-type="All">All</button>
-    <button class="filter-btn" data-type="Garbage">Garbage</button>
-    <button class="filter-btn" data-type="Street Light">Street Light</button>
-    <button class="filter-btn" data-type="Water Supply">Water Supply</button>
-    <button class="filter-btn" data-type="Sewage">Sewage</button>
-    <button class="filter-btn" data-type="Other">Other</button>
+      <button class="filter-btn active" data-type="All">All</button>
+      <button class="filter-btn" data-type="Garbage">Garbage</button>
+      <button class="filter-btn" data-type="Street Light">Street Light</button>
+      <button class="filter-btn" data-type="Water Supply">Water Supply</button>
+      <button class="filter-btn" data-type="Sewage">Sewage</button>
+      <button class="filter-btn" data-type="Other">Other</button>
   </div>
 
+  <!-- NEW COLLAPSE BUTTON (ADDED) -->
   <div id="collapseSidebar" class="sidebar-toggle">◀</div>
 
+  <!-- MAP -->
   <div id="map"></div>
 
-</div>
-
-<!-- SIGN-IN POPUP -->
-<div id="signinModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeSigninModal()">&times;</span>
-    <h2>Sign In</h2>
-
-    <input type="text" id="loginPhone" maxlength="10" placeholder="Enter phone number">
-    <button onclick="sendOTP()">Send OTP</button>
-
-    <div id="otpBox" style="display:none;">
-      <input type="text" id="loginOtp" maxlength="6" placeholder="Enter OTP">
-      <button onclick="verifyOTP()">Verify & Continue</button>
-    </div>
-  </div>
 </div>
 
 <script src="main.js"></script>
