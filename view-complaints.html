@@ -6,7 +6,6 @@
   <title>View Complaints</title>
 
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -17,14 +16,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
-  <style>
-    body { background: white !important; }
-  </style>
 </head>
 
 <body>
-
-
 
 <header class="gov-header">
   <h1>View Registered Complaints</h1>
@@ -38,39 +32,41 @@
 
 <div class="complaints-layout">
 
+  <!-- LEFT FILTER PANEL -->
   <div class="filter-panel" id="leftPanel">
 
-  <label class="filter-label">Complaint Type</label>
-  <select id="filterType" class="filter-select">
-    <option value="All">All</option>
-    <option value="Garbage">Garbage</option>
-    <option value="Street Light">Street Light</option>
-    <option value="Water Supply">Water Supply</option>
-    <option value="Sewage">Sewage</option>
-    <option value="Other">Other</option>
-  </select>
+    <label class="filter-label">Complaint Type</label>
+    <select id="filterType" class="filter-select">
+      <option value="All">All</option>
+      <option value="Garbage">Garbage</option>
+      <option value="Street Light">Street Light</option>
+      <option value="Water Supply">Water Supply</option>
+      <option value="Sewage">Sewage</option>
+      <option value="Other">Other</option>
+    </select>
 
-  <label class="filter-label">Status</label>
-  <select id="filterStatus" class="filter-select">
-    <option value="All">All</option>
-    <option value="pending">Pending</option>
-    <option value="in-progress">In Progress</option>
-    <option value="completed">Completed</option>
-  </select>
+    <label class="filter-label">Status</label>
+    <select id="filterStatus" class="filter-select">
+      <option value="All">All</option>
+      <option value="pending">Pending</option>
+      <option value="in-progress">In Progress</option>
+      <option value="completed">Completed</option>
+    </select>
 
-  <label class="filter-label">Urgency</label>
-  <select id="filterUrgency" class="filter-select">
-    <option value="All">All</option>
-    <option value="Low">Low</option>
-    <option value="Medium">Medium</option>
-    <option value="High">High</option>
-  </select>
+    <label class="filter-label">Urgency</label>
+    <select id="filterUrgency" class="filter-select">
+      <option value="All">All</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
 
-</div>
+  </div>
 
-
+  <!-- COLLAPSE BUTTON -->
   <div id="collapseSidebar" class="sidebar-toggle">◀</div>
 
+  <!-- MAP -->
   <div id="map"></div>
 
 </div>
@@ -91,6 +87,9 @@
   </div>
 </div>
 
+<!-- JS -->
+<script src="script.js"></script>
 <script src="main.js"></script>
+
 </body>
 </html>
