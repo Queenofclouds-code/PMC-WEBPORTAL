@@ -162,14 +162,14 @@ def add_complaint():
     longitude = data.get("longitude")
 
     image_file = request.files.get("files[]")
-    imageurl = None  # ✅ Table column name
+    image_url = None  # ✅ Table column name
 
     if image_file:
         filename = image_file.filename.replace(" ", "_")
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         image_file.save(filepath)
         BASE_URL = "https://gist.aeronica.in/portal"
-        imageurl = f"{BASE_URL}/uploads/{filename}"
+        image_url = f"{BASE_URL}/uploads/{filename}"
 
     # ✅ EXACT table column names
     sql = """
@@ -178,10 +178,10 @@ def add_complaint():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(sql, (fullname, phone, complaint_type, description, 
-                        urgency, latitude, longitude, imageurl, "pending"))
+                        urgency, latitude, longitude, image_url, "pending"))
     conn.commit()
 
-    return jsonify({"status": "success", "message": "Complaint saved", "imageurl": imageurl})
+    return jsonify({"status": "success", "message": "Complaint saved", "imageurl": image_url})
 
 # ==========================
 # HOST UPLOADED IMAGES
@@ -210,7 +210,7 @@ def public_complaints():
             "latitude": r[6],
             "longitude": r[7],
             "created_at": str(r[8]),
-            "imageurl": r[9],        # ✅ imageurl (not image_url)
+            "image_url": r[9],        # ✅ imageurl (not image_url)
             "status": r[10]
         })
 
@@ -237,7 +237,7 @@ def get_all_complaints():
             "latitude": r[6],
             "longitude": r[7],
             "created_at": str(r[8]),
-            "imageurl": r[9],        # ✅ imageurl
+            "image_url": r[9],        # ✅ imageurl
             "status": r[10]
         })
 
