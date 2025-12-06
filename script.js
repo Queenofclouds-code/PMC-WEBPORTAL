@@ -41,21 +41,9 @@ function isLoggedIn() {
    UPDATE LOGIN STATUS DISPLAY
 ======================= */
 function updateLoginStatus() {
-    const statusEl = document.getElementById("loginStatus");
-    const statusText = document.getElementById("statusText");
-    
-    if (!statusEl || !statusText) return;
-    
-    if (isLoggedIn()) {
-        statusText.textContent = "✅ Logged In";
-        statusText.style.color = "green";
-        toggleLogoutButton(); // Show logout button
-    } else {
-        statusText.textContent = "👤 Guest - Login Required";
-        statusText.style.color = "red";
-        toggleLogoutButton(); // Hide logout button
-    }
+    toggleLogoutButton(); // only control buttons now
 }
+
 
 /* =======================
    LOGOUT FUNCTION
@@ -376,13 +364,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // Show/hide logout button based on login state
     function toggleLogoutButton() {
-        const logoutBtn = document.getElementById("logoutBtn");
-        if (logoutBtn) {
-            logoutBtn.style.display = isLoggedIn() ? "inline-block" : "none";
-        }
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        // Logout visible only when logged in
+        logoutBtn.style.display = isLoggedIn() ? "inline-block" : "none";
     }
-    toggleLogoutButton();
-    // Update button when login status changes
-    document.addEventListener("click", function() {
-        setTimeout(toggleLogoutButton, 100);
+
+    // Show/Hide all nav Sign In links (those that open the modal)
+    const signInLinks = document.querySelectorAll('a[onclick="openSigninModal()"]');
+    signInLinks.forEach(link => {
+        link.style.display = isLoggedIn() ? "none" : "inline-block";
     });
+}
+
+toggleLogoutButton();
+document.addEventListener("click", function () {
+    setTimeout(toggleLogoutButton, 100);
+});
