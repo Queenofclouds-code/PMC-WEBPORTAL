@@ -138,6 +138,27 @@ async function verifyOTP() {
     unlockPage();
     alert("✅ Login successful! Form unlocked.");
 }
+/* =======================
+   UNLOCK NAVIGATION TABS
+======================= */
+function unlockNavTabs() {
+    const complaintLink = document.getElementById("complaintFormLink");
+    const viewLink = document.getElementById("viewComplaintsLink");
+    
+    if (complaintLink) {
+        complaintLink.disabled = false;
+        complaintLink.style.pointerEvents = "auto";
+        complaintLink.style.color = "";
+        complaintLink.classList.add("active");
+    }
+    
+    if (viewLink) {
+        viewLink.disabled = false;
+        viewLink.style.pointerEvents = "auto";
+        viewLink.style.color = "";
+    }
+}
+
 
 
 /* =======================
@@ -274,6 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isLoggedIn()) {
         unlockForm();
         unlockPage();
+        unlockNavTabs();
     }
     
     // Show login modal on protected pages if not logged in
