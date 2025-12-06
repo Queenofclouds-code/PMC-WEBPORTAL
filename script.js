@@ -49,11 +49,34 @@ function updateLoginStatus() {
     if (isLoggedIn()) {
         statusText.textContent = "✅ Logged In";
         statusText.style.color = "green";
+        toggleLogoutButton(); // Show logout button
     } else {
         statusText.textContent = "👤 Guest - Login Required";
         statusText.style.color = "red";
+        toggleLogoutButton(); // Hide logout button
     }
 }
+
+/* =======================
+   LOGOUT FUNCTION
+======================= */
+function logout() {
+    localStorage.removeItem("user_token");
+    lockTabsForUnauthenticatedUsers();
+    updateLoginStatus();
+    unlockNavTabs(); // Refresh nav state
+    alert("✅ Logged out successfully!");
+}
+
+// Attach logout button click event
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", logout);
+    }
+    
+});
+
 
 /* =======================
    UNLOCK COMPLAINT FORM
@@ -325,3 +348,15 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => openSigninModal(), 500);
     }
 });
+// Show/hide logout button based on login state
+    function toggleLogoutButton() {
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+            logoutBtn.style.display = isLoggedIn() ? "inline-block" : "none";
+        }
+    }
+    toggleLogoutButton();
+    // Update button when login status changes
+    document.addEventListener("click", function() {
+        setTimeout(toggleLogoutButton, 100);
+    });
