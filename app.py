@@ -153,39 +153,35 @@ def verify_otp():
 @app.route("/portal/api/complaints", methods=["POST"])
 def add_complaint():
     data = request.form
-
     fullname = data.get("fullname")
-    email = data.get("email")  # Use email instead of phone
-    complaint_type = data.get("complaint_type")
+    phone = data.get("phone")
+    complainttype = data.get("complaint_type")  # Frontend sends complaint_type
     description = data.get("description")
     urgency = data.get("urgency")
     latitude = data.get("latitude")
     longitude = data.get("longitude")
 
     image_file = request.files.get("files[]")
-    image_url = None
+    imageurl = None  # ✅ Table column name
 
     if image_file:
         filename = image_file.filename.replace(" ", "_")
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         image_file.save(filepath)
-
         BASE_URL = "https://gist.aeronica.in/portal"
-        image_url = f"{BASE_URL}/uploads/{filename}"
+        imageurl = f"{BASE_URL}/uploads/{filename}"
 
+    # ✅ EXACT table column names
     sql = """
-        INSERT INTO complaints(fullname, email, complaint_type, description,
-        urgency, latitude, longitude, image_url)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO complaints(fullname, phone, complainttype, description, 
+                               urgency, latitude, longitude, imageurl, status)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
-    cursor.execute(sql, (
-        fullname, email, complaint_type, description,
-        urgency, latitude, longitude, image_url
-    ))
-
+    cursor.execute(sql, (fullname, phone, complainttype, description, 
+                        urgency, latitude, longitude, imageurl, "pending"))
     conn.commit()
 
-    return jsonify({"status": "success", "message": "Complaint saved", "image_url": image_url})
+    return jsonify({"status": "success", "message": "Complaint saved", "imageurl": imageurl})
 
 # ==========================
 # HOST UPLOADED IMAGES
@@ -207,14 +203,14 @@ def public_complaints():
         complaints.append({
             "id": r[0],
             "fullname": r[1],
-            "email": r[2],  # Use email instead of phone
-            "complaint_type": r[3],
+            "phone": r[2],          # ✅ Index 2 = phone (not email)
+            "complainttype": r[3],   # ✅ complainttype (not complaint_type)
             "description": r[4],
             "urgency": r[5],
             "latitude": r[6],
             "longitude": r[7],
             "created_at": str(r[8]),
-            "image_url": r[9],
+            "imageurl": r[9],        # ✅ imageurl (not image_url)
             "status": r[10]
         })
 
@@ -234,14 +230,14 @@ def get_all_complaints():
         complaints.append({
             "id": r[0],
             "fullname": r[1],
-            "email": r[2],  # Use email instead of phone
-            "complaint_type": r[3],
+            "phone": r[2],          # ✅ Index 2 = phone
+            "complainttype": r[3],   # ✅ complainttype
             "description": r[4],
             "urgency": r[5],
             "latitude": r[6],
             "longitude": r[7],
             "created_at": str(r[8]),
-            "image_url": r[9],
+            "imageurl": r[9],        # ✅ imageurl
             "status": r[10]
         })
 
