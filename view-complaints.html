@@ -26,17 +26,15 @@
     <a href="index.html">Home</a>
     <a href="#" onclick="openSigninModal()">Sign In</a>
     <a href="complaint.html">Complaint Form</a>
-    <a href="view-complaints.html">View Complaints</a>
+    <a href="view-complaints.html" id="viewComplaintsLink">View Complaints</a>
   </nav>
 </header>
 
 <div class="complaints-layout">
-
   <!-- LEFT FILTER PANEL -->
-  <div class="filter-panel" id="leftPanel">
-
+  <div class="filter-panel" id="leftPanel" style="pointer-events: none; opacity: 0.5;">
     <label class="filter-label">Complaints</label>
-    <select id="filterType" class="filter-select">
+    <select id="filterType" class="filter-select" disabled>
       <option value="All">All</option>
       <option value="Garbage">Garbage</option>
       <option value="Street Light">Street Light</option>
@@ -46,7 +44,7 @@
     </select>
 
     <label class="filter-label">Status</label>
-    <select id="filterStatus" class="filter-select">
+    <select id="filterStatus" class="filter-select" disabled>
       <option value="All">All</option>
       <option value="pending">Pending</option>
       <option value="in-progress">In Progress</option>
@@ -54,21 +52,19 @@
     </select>
 
     <label class="filter-label">Urgency</label>
-    <select id="filterUrgency" class="filter-select">
+    <select id="filterUrgency" class="filter-select" disabled>
       <option value="All">All</option>
       <option value="Low">Low</option>
       <option value="Medium">Medium</option>
       <option value="High">High</option>
     </select>
-
   </div>
 
   <!-- COLLAPSE BUTTON -->
   <div id="collapseSidebar" class="sidebar-toggle">◀</div>
 
   <!-- MAP -->
-  <div id="map"></div>
-
+  <div id="map" style="pointer-events: none;"></div> <!-- Lock map by disabling interactions -->
 </div>
 
 <!-- SIGN-IN POPUP -->
