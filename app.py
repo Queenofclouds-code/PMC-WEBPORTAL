@@ -2,12 +2,12 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import psycopg2
 import os
-
-# ===== NEW IMPORTS (JWT + BCRYPT) =====
 import bcrypt
 import jwt
+from flask_mail import Mail, Message
 from functools import wraps
 from datetime import datetime, timedelta
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -38,6 +38,14 @@ try:
 except Exception as e:
     print("❌ Failed to connect to PostgreSQL:", e)
 
+# ======== CONFIGURE FLASK-MAIL ========
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Example using Gmail's SMTP
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'meghajamdatalab@gmail.com'  # Replace with your email
+app.config['MAIL_PASSWORD'] = 'ccgfboycllkkjhvx'  # Replace with your email password
+app.config['MAIL_DEFAULT_SENDER'] = 'meghajamdatalab@gmail.com'  # Replace with your email
+mail = Mail(app)
 
 # ==========================
 # 🔒 JWT VERIFICATION DECORATOR
@@ -61,7 +69,6 @@ def admin_required(f):
 
         return f(*args, **kwargs)
     return decorated
-
 
 # ==========================
 # 🔐 ADMIN LOGIN API (JWT)
@@ -91,6 +98,54 @@ def admin_login():
 
     return jsonify({"token": token})
 
+# ==========================
+# SEND OTP VIA EMAIL
+# ==========================
+@app.route("/portal/api/auth/send-otp", methods=["POST"])
+def send_otp():
+    data = request.json
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    otp = str(random.randint(100000, 999999))  # Generate 6-digit OTP
+
+    # Store OTP in the database
+    cursor.execute("INSERT INTO otp_verification (email, otp, created_at) VALUES (%s, %s, NOW())", (email, otp))
+    conn.commit()
+
+    # Send OTP via email
+    msg = Message("Your OTP Code", recipients=[email])
+    msg.body = f"Your OTP code is: {otp}"
+    mail.send(msg)
+
+    return jsonify({"message": "OTP sent successfully"})
+
+# ==========================
+# VERIFY OTP
+# ==========================
+@app.route("/portal/api/auth/verify-otp", methods=["POST"])
+def verify_otp():
+    data = request.json
+    email = data.get("email")
+    otp = data.get("otp")
+
+    if not email or not otp:
+        return jsonify({"error": "Email and OTP are required"}), 400
+
+    # Retrieve OTP from the database
+    cursor.execute("SELECT otp FROM otp_verification WHERE email=%s ORDER BY created_at DESC LIMIT 1", (email,))
+    stored_otp = cursor.fetchone()
+
+    if not stored_otp or stored_otp[0] != otp:
+        return jsonify({"error": "Invalid OTP"}), 400
+
+    # Generate JWT token after successful OTP verification
+    token = jwt.encode({"email": email, "exp": datetime.utcnow() + timedelta(hours=24)},
+                       SECRET_KEY, algorithm="HS256")
+
+    return jsonify({"token": token})
 
 # ==========================
 # POST: Store complaint (with image)
@@ -100,7 +155,7 @@ def add_complaint():
     data = request.form
 
     fullname = data.get("fullname")
-    phone = data.get("phone")
+    email = data.get("email")  # Use email instead of phone
     complaint_type = data.get("complaint_type")
     description = data.get("description")
     urgency = data.get("urgency")
@@ -119,12 +174,12 @@ def add_complaint():
         image_url = f"{BASE_URL}/uploads/{filename}"
 
     sql = """
-        INSERT INTO complaints(fullname, phone, complaint_type, description,
+        INSERT INTO complaints(fullname, email, complaint_type, description,
         urgency, latitude, longitude, image_url)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(sql, (
-        fullname, phone, complaint_type, description,
+        fullname, email, complaint_type, description,
         urgency, latitude, longitude, image_url
     ))
 
@@ -132,14 +187,12 @@ def add_complaint():
 
     return jsonify({"status": "success", "message": "Complaint saved", "image_url": image_url})
 
-
 # ==========================
 # HOST UPLOADED IMAGES
 # ==========================
 @app.route("/portal/uploads/<path:filename>")
 def serve_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
-
 
 # ==========================
 # 🌍 PUBLIC: GET ALL COMPLAINTS
@@ -154,7 +207,7 @@ def public_complaints():
         complaints.append({
             "id": r[0],
             "fullname": r[1],
-            "phone": r[2],
+            "email": r[2],  # Use email instead of phone
             "complaint_type": r[3],
             "description": r[4],
             "urgency": r[5],
@@ -166,7 +219,6 @@ def public_complaints():
         })
 
     return jsonify({"complaints": complaints})
-
 
 # ==========================
 # 🔒 ADMIN: GET ALL COMPLAINTS
@@ -182,7 +234,7 @@ def get_all_complaints():
         complaints.append({
             "id": r[0],
             "fullname": r[1],
-            "phone": r[2],
+            "email": r[2],  # Use email instead of phone
             "complaint_type": r[3],
             "description": r[4],
             "urgency": r[5],
@@ -194,7 +246,6 @@ def get_all_complaints():
         })
 
     return jsonify({"complaints": complaints})
-
 
 # ==========================
 # 🔒 ADMIN: UPDATE STATUS
@@ -228,7 +279,6 @@ def update_status():
         "id": complaint_id,
         "new_status": new_status
     })
-
 
 # ==========================
 # RUN APP (DEV MODE)
