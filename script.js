@@ -65,6 +65,7 @@ function logout() {
     lockTabsForUnauthenticatedUsers();
     updateLoginStatus();
     alert("✅ Logged out successfully!");
+    window.location.href = "index.html";
 }
 
 // Attach logout button click event
