@@ -37,6 +37,30 @@ function isLoggedIn() {
         return false;
     }
 }
+/* =======================
+   UNLOCK COMPLAINT FORM
+======================= */
+function unlockForm() {
+    if (!document.getElementById('complaintForm')) return;
+    ['fullname', 'phone', 'complaintType', 'description', 'urgency', 'files'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.removeAttribute('disabled');
+    });
+    document.querySelector('.submit-btn')?.removeAttribute('disabled');
+}
+
+/* =======================
+   UNLOCK VIEW COMPLAINTS
+======================= */
+function unlockPage() {
+    if (!document.getElementById('map')) return;
+    document.querySelectorAll('.filter-select').forEach(el => el.removeAttribute('disabled'));
+    const leftPanel = document.getElementById('leftPanel');
+    if (leftPanel) leftPanel.style.cssText = 'pointer-events: auto; opacity: 1;';
+    const mapEl = document.getElementById('map');
+    if (mapEl) mapEl.style.pointerEvents = 'auto';
+}
+
 
 /* =======================
    LOCK COMPLAINT FORM AND VIEW COMPLAINTS FOR UNAUTHENTICATED USERS
@@ -96,26 +120,25 @@ async function verifyOTP() {
     const res = await fetch("/portal/api/auth/verify-otp", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email, otp })  // Send email instead of phone
+        body: JSON.stringify({ email, otp })
     });
 
     const data = await res.json();
 
     if (!data.token) {
-        alert("Incorrect OTP");
+        alert("❌ Incorrect OTP");
         return;
     }
 
-    // Save login token
     localStorage.setItem("user_token", data.token);
-
     closeSigninModal();
-
-    // Redirect to intended page (if set)
-    if (window.gotoAfterLogin) {
-        window.location.href = window.gotoAfterLogin;
-    }
+    
+    // ✅ UNLOCK EVERYTHING INSTANTLY
+    unlockForm();
+    unlockPage();
+    alert("✅ Login successful! Form unlocked.");
 }
+
 
 /* =======================
    GET LIVE LOCATION
@@ -207,7 +230,7 @@ if (document.getElementById("complaintForm")) {
 
             const formData = new FormData();
             formData.append("fullname", fullname.value);
-            formData.append("email", email.value);  // Use email instead of phone
+            formData.append("phone", phone.value);  // ✅ Matches your HTML + backend
             formData.append("complaint_type", complaintType.value);
             formData.append("description", description.value);
             formData.append("urgency", urgency.value);
@@ -245,11 +268,17 @@ if (document.getElementById("complaintForm")) {
    LOCKING COMPLAINT FORM AND VIEW COMPLAINTS PAGE
 ======================= */
 document.addEventListener("DOMContentLoaded", function () {
-    // Lock the tabs if the user is not logged in
     lockTabsForUnauthenticatedUsers();
-
-    // If the user tries to access the complaint page directly without being logged in, redirect them
-    if (window.location.pathname === "/complaint.html" || window.location.pathname === "/view-complaints.html") {
-        redirectToLoginIfNotLoggedIn();
+    
+    // ✅ UNLOCK IF ALREADY LOGGED IN
+    if (isLoggedIn()) {
+        unlockForm();
+        unlockPage();
+    }
+    
+    // Show login modal on protected pages if not logged in
+    const path = window.location.pathname.split('/').pop();
+    if (!isLoggedIn() && (path === 'complaint.html' || path === 'view-complaints.html')) {
+        setTimeout(() => openSigninModal(), 500);
     }
 });
