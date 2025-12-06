@@ -12,20 +12,75 @@ function closeSigninModal() {
 }
 
 /* =======================
+   CHECK IF USER IS LOGGED IN
+======================= */
+function isLoggedIn() {
+    const token = localStorage.getItem("user_token");
+    if (!token) {
+        return false;  // No token means user is not logged in
+    }
+
+    try {
+        // Decode the JWT token (optional, but can be used for expiry checks)
+        const payload = JSON.parse(atob(token.split('.')[1]));  // Decoding the payload
+        const expiry = payload.exp * 1000;  // Convert expiration to milliseconds
+        const now = Date.now();
+
+        if (expiry < now) {
+            localStorage.removeItem("user_token");  // Token expired, remove it
+            return false;
+        }
+
+        return true;  // Token is valid
+    } catch (error) {
+        console.error("Invalid token format", error);
+        return false;
+    }
+}
+
+/* =======================
+   LOCK COMPLAINT FORM AND VIEW COMPLAINTS FOR UNAUTHENTICATED USERS
+======================= */
+function lockTabsForUnauthenticatedUsers() {
+    if (!isLoggedIn()) {
+        // Lock the Complaint Form tab link
+        document.getElementById("complaintFormLink").disabled = true;
+        document.getElementById("complaintFormLink").style.pointerEvents = "none";  // Make it unclickable
+        document.getElementById("complaintFormLink").style.color = "gray";  // Optional: Change color to indicate it's locked
+        
+        // Lock the View Complaints tab link
+        document.getElementById("viewComplaintsLink").disabled = true;
+        document.getElementById("viewComplaintsLink").style.pointerEvents = "none";  // Make it unclickable
+        document.getElementById("viewComplaintsLink").style.color = "gray";  // Optional: Change color to indicate it's locked
+        
+        // Show login prompt (optional)
+        document.getElementById("loginPrompt").style.display = "block";
+    }
+}
+
+/* =======================
+   REDIRECT TO LOGIN PAGE IF NOT LOGGED IN
+======================= */
+function redirectToLoginIfNotLoggedIn() {
+    if (!isLoggedIn()) {
+        window.location.href = "login.html";  // Redirect to your login page
+    }
+}
+
+/* =======================
    SEND OTP
 ======================= */
 async function sendOTP() {
-    const phone = document.getElementById("loginPhone").value;
-
-    if (phone.length !== 10) {
-        alert("Enter a valid phone number");
+    const email = document.getElementById("loginEmail").value;
+    if (!email || !email.includes("@")) {
+        alert("Enter a valid email address");
         return;
     }
 
     await fetch("/portal/api/auth/send-otp", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ phone })
+        body: JSON.stringify({ email })  // Send email instead of phone
     });
 
     document.getElementById("otpBox").style.display = "block";
@@ -35,13 +90,13 @@ async function sendOTP() {
    VERIFY OTP
 ======================= */
 async function verifyOTP() {
-    const phone = document.getElementById("loginPhone").value;
+    const email = document.getElementById("loginEmail").value;
     const otp = document.getElementById("loginOtp").value;
 
     const res = await fetch("/portal/api/auth/verify-otp", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ phone, otp })
+        body: JSON.stringify({ email, otp })  // Send email instead of phone
     });
 
     const data = await res.json();
@@ -142,12 +197,17 @@ if (document.getElementById("complaintForm")) {
         .addEventListener("submit", async (e) => {
             e.preventDefault();
 
+            // Ensure the user is logged in before submitting the complaint
+            if (!isLoggedIn()) {
+                alert("Please log in to submit a complaint.");
+                return;
+            }
 
             await getLiveLocation();
 
             const formData = new FormData();
             formData.append("fullname", fullname.value);
-            formData.append("phone", phone.value);
+            formData.append("email", email.value);  // Use email instead of phone
             formData.append("complaint_type", complaintType.value);
             formData.append("description", description.value);
             formData.append("urgency", urgency.value);
@@ -180,3 +240,16 @@ if (document.getElementById("complaintForm")) {
             }
         });
 }
+
+/* =======================
+   LOCKING COMPLAINT FORM AND VIEW COMPLAINTS PAGE
+======================= */
+document.addEventListener("DOMContentLoaded", function () {
+    // Lock the tabs if the user is not logged in
+    lockTabsForUnauthenticatedUsers();
+
+    // If the user tries to access the complaint page directly without being logged in, redirect them
+    if (window.location.pathname === "/complaint.html" || window.location.pathname === "/view-complaints.html") {
+        redirectToLoginIfNotLoggedIn();
+    }
+});
