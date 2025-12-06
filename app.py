@@ -155,7 +155,7 @@ def add_complaint():
     data = request.form
     fullname = data.get("fullname")
     phone = data.get("phone")
-    complainttype = data.get("complaint_type")  # Frontend sends complaint_type
+    complaint_type = data.get("complaint_type")  # Frontend sends complaint_type
     description = data.get("description")
     urgency = data.get("urgency")
     latitude = data.get("latitude")
@@ -173,11 +173,11 @@ def add_complaint():
 
     # ✅ EXACT table column names
     sql = """
-        INSERT INTO complaints(fullname, phone, complainttype, description, 
-                               urgency, latitude, longitude, imageurl, status)
+        INSERT INTO complaints(fullname, phone, complaint_type, description, 
+                               urgency, latitude, longitude, image_url, status)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """
-    cursor.execute(sql, (fullname, phone, complainttype, description, 
+    cursor.execute(sql, (fullname, phone, complaint_type, description, 
                         urgency, latitude, longitude, imageurl, "pending"))
     conn.commit()
 
@@ -204,7 +204,7 @@ def public_complaints():
             "id": r[0],
             "fullname": r[1],
             "phone": r[2],          # ✅ Index 2 = phone (not email)
-            "complainttype": r[3],   # ✅ complainttype (not complaint_type)
+            "complaint_type": r[3],   # ✅ complainttype (not complaint_type)
             "description": r[4],
             "urgency": r[5],
             "latitude": r[6],
