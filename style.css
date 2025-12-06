@@ -348,12 +348,9 @@ button { cursor: pointer; }
 /* =======================
    LOGIN STATUS + HEADER FIXES
 =========================== */
+/* Hide old status text block */
 #loginStatus {
-    float: right;
-    padding: 10px;
-    font-weight: bold;
-    font-size: 14px;
-    margin-top: 10px;
+    display: none;
 }
 
 .gov-header {
