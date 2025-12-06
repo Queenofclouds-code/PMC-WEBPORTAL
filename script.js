@@ -64,7 +64,6 @@ function logout() {
     localStorage.removeItem("user_token");
     lockTabsForUnauthenticatedUsers();
     updateLoginStatus();
-    unlockNavTabs(); // Refresh nav state
     alert("✅ Logged out successfully!");
 }
 
@@ -108,18 +107,23 @@ function unlockPage() {
 ======================= */
 function lockTabsForUnauthenticatedUsers() {
     if (!isLoggedIn()) {
-        // Lock the Complaint Form tab link
-        document.getElementById("complaintFormLink").disabled = true;
-        document.getElementById("complaintFormLink").style.pointerEvents = "none";  // Make it unclickable
-        document.getElementById("complaintFormLink").style.color = "gray";  // Optional: Change color to indicate it's locked
-        
-        // Lock the View Complaints tab link
-        document.getElementById("viewComplaintsLink").disabled = true;
-        document.getElementById("viewComplaintsLink").style.pointerEvents = "none";  // Make it unclickable
-        document.getElementById("viewComplaintsLink").style.color = "gray";  // Optional: Change color to indicate it's locked
-        
-        // Show login prompt (optional)
-        document.getElementById("loginPrompt").style.display = "block";
+        const complaintLink = document.getElementById("complaintFormLink");
+        const viewLink = document.getElementById("viewComplaintsLink");
+        const loginPrompt = document.getElementById("loginPrompt");
+
+        if (complaintLink) {
+            complaintLink.disabled = true;
+            complaintLink.style.pointerEvents = "none";
+            complaintLink.style.color = "gray";
+        }
+        if (viewLink) {
+            viewLink.disabled = true;
+            viewLink.style.pointerEvents = "none";
+            viewLink.style.color = "gray";
+        }
+        if (loginPrompt) {
+            loginPrompt.style.display = "block";   // complaint/view pages only
+        }
     }
 }
 
