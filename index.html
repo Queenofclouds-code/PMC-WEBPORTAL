@@ -14,9 +14,9 @@
   <h1>Pune Municipal Corporation Dashboard</h1>
   <nav>
     <a href="index.html" class="active">Home</a>
-    <a href="#" onclick="openSigninModal()">Sign In</a>
-    <a href="complaint.html">Complaint Form</a>
-    <a href="view-complaints.html">View Complaints</a>
+    <a href="#" onclick="openSigninModal()">Sign In with Email</a>
+    <a href="complaint.html" id="complaintFormLink">Complaint Form</a> <!-- Complaint Form Link -->
+    <a href="view-complaints.html" id="viewComplaintsLink">View Complaints</a> <!-- View Complaints Link -->
   </nav>
 </header>
 
@@ -67,7 +67,7 @@
     <span class="close" onclick="closeSigninModal()">&times;</span>
     <h2>Sign In</h2>
 
-    <input type="text" id="loginPhone" maxlength="10" placeholder="Enter phone number">
+    <input type="email" id="loginEmail" placeholder="Enter email address">
     <button onclick="sendOTP()">Send OTP</button>
 
     <div id="otpBox" style="display:none;">
@@ -75,6 +75,11 @@
       <button onclick="verifyOTP()">Verify & Continue</button>
     </div>
   </div>
+</div>
+
+<!-- Login Prompt (hidden by default) -->
+<div id="loginPrompt" style="display:none; color: red;">
+    <p>Please log in to submit a complaint or view complaints.</p>
 </div>
 
 </body>
