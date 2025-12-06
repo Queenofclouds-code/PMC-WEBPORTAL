@@ -185,25 +185,45 @@ async function verifyOTP() {
     unlockNavTabs();      // ✅ ADD THIS LINE
     alert("✅ Login successful! Form unlocked.");
 }
+
+
+
+function clearActiveNav() {
+  const navLinks = document.querySelectorAll('nav a');
+  navLinks.forEach(a => a.classList.remove('active'));
+}
+
 /* =======================
    UNLOCK NAVIGATION TABS
 ======================= */
 function unlockNavTabs() {
-    const complaintLink = document.getElementById("complaintFormLink");
-    const viewLink = document.getElementById("viewComplaintsLink");
-    
-    if (complaintLink) {
-        complaintLink.disabled = false;
-        complaintLink.style.pointerEvents = "auto";
-        complaintLink.style.color = "";
-        complaintLink.classList.add("active");
-    }
-    
-    if (viewLink) {
-        viewLink.disabled = false;
-        viewLink.style.pointerEvents = "auto";
-        viewLink.style.color = "";
-    }
+  const complaintLink = document.getElementById("complaintFormLink");
+  const viewLink = document.getElementById("viewComplaintsLink");
+
+  // enable links
+  if (complaintLink) {
+    complaintLink.disabled = false;
+    complaintLink.style.pointerEvents = "auto";
+    complaintLink.style.color = "";
+  }
+  if (viewLink) {
+    viewLink.disabled = false;
+    viewLink.style.pointerEvents = "auto";
+    viewLink.style.color = "";
+  }
+
+  // set active based on current page
+  clearActiveNav();
+  const path = window.location.pathname.split('/').pop();
+
+  if (path === "complaint.html" && complaintLink) {
+    complaintLink.classList.add("active");
+  } else if (path === "view-complaints.html" && viewLink) {
+    viewLink.classList.add("active");
+  } else {
+    const homeLink = document.querySelector('nav a[href="index.html"]');
+    if (homeLink) homeLink.classList.add("active");
+  }
 }
 
 
