@@ -185,6 +185,7 @@ async function verifyOTP() {
     updateLoginStatus();  // ✅ ADD THIS LINE
     unlockNavTabs();      // ✅ ADD THIS LINE
     alert("✅ Login successful! Form unlocked.");
+    window.location.href = "complaint.html";
 }
 
 
