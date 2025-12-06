@@ -38,6 +38,24 @@ function isLoggedIn() {
     }
 }
 /* =======================
+   UPDATE LOGIN STATUS DISPLAY
+======================= */
+function updateLoginStatus() {
+    const statusEl = document.getElementById("loginStatus");
+    const statusText = document.getElementById("statusText");
+    
+    if (!statusEl || !statusText) return;
+    
+    if (isLoggedIn()) {
+        statusText.textContent = "✅ Logged In";
+        statusText.style.color = "green";
+    } else {
+        statusText.textContent = "👤 Guest - Login Required";
+        statusText.style.color = "red";
+    }
+}
+
+/* =======================
    UNLOCK COMPLAINT FORM
 ======================= */
 function unlockForm() {
@@ -136,6 +154,8 @@ async function verifyOTP() {
     // ✅ UNLOCK EVERYTHING INSTANTLY
     unlockForm();
     unlockPage();
+    updateLoginStatus();  // ✅ ADD THIS LINE
+    unlockNavTabs();      // ✅ ADD THIS LINE
     alert("✅ Login successful! Form unlocked.");
 }
 /* =======================
@@ -289,6 +309,7 @@ if (document.getElementById("complaintForm")) {
    LOCKING COMPLAINT FORM AND VIEW COMPLAINTS PAGE
 ======================= */
 document.addEventListener("DOMContentLoaded", function () {
+    updateLoginStatus();
     lockTabsForUnauthenticatedUsers();
     
     // ✅ UNLOCK IF ALREADY LOGGED IN
