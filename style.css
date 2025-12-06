@@ -343,5 +343,30 @@ button { cursor: pointer; }
   cursor: pointer;
   color: #444;
 }
+/* Your existing styles... */
+
+/* =======================
+   LOGIN STATUS + HEADER FIXES
+=========================== */
+#loginStatus {
+    float: right;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.gov-header {
+    position: relative; /* Ensure header contains floated elements */
+    overflow: hidden;  /* Clearfix for float */
+}
+
+/* Active nav styling */
+nav a.active {
+    color: #007cba;
+    border-bottom: 3px solid #007cba;
+    font-weight: bold;
+}
+
 
 
