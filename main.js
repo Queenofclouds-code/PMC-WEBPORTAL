@@ -102,8 +102,8 @@ function buildMarkers(complaints) {
         <small>${index + 1} / ${items.length}</small><br><br>
       `;
 
-      if (d.image_url) {
-        html += `<img src="${d.image_url}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
+      if (d.imageurl) {
+        html += `<img src="${d.imageurl}" style="width:240px;border-radius:10px;margin-bottom:10px;"><br>`;
       }
 
 
