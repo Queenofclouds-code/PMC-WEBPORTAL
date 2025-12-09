@@ -185,34 +185,33 @@ const heatBtn = document.getElementById("toggleHeatmap");
 
 if (heatBtn) {
   heatBtn.addEventListener("click", () => {
-    // If heatmap is visible, hide it
+    // If heatmap is visible, hide it and reset
     if (heatLayer && map.hasLayer(heatLayer)) {
       map.removeLayer(heatLayer);
+      heatLayer = null;            // important: reset
       return;
     }
 
-    // Build heat points from CURRENT filtered data
+    // Rebuild points every time you turn it ON
     const points = allComplaints
       .filter(c => c.latitude && c.longitude)
       .map(c => {
         const u = (c.urgency || "").toLowerCase();
-        let intensity = 0.9;
-        if (u === "medium") intensity = 1.6;
-        if (u === "high") intensity = 2.3;
+        let intensity = 0.6;
+        if (u === "medium") intensity = 0.9;
+        if (u === "high") intensity = 1.2;
         return [Number(c.latitude), Number(c.longitude), intensity];
       });
 
-    if (!heatLayer) {
-      heatLayer = L.heatLayer(points, {
-        radius: 25,
-        blur: 15,
-        maxZoom: 18
-      });
-    } else {
-      heatLayer.setLatLngs(points);
-    }
+    if (!points.length) return;    // nothing to show
+
+    heatLayer = L.heatLayer(points, {
+      radius: 30,
+      blur: 20,
+      maxZoom: 18,
+      max: 1.2
+    });
 
     map.addLayer(heatLayer);
   });
 }
-
