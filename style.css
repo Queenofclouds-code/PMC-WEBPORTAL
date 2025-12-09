@@ -367,7 +367,7 @@ nav a.active {
 
 /* Style Toggle Heatmap button as red with spacing */
 #toggleHeatmap {
-  margin-top: 6px;              /* space above the button */
+  margin-top: 20px;              /* space above the button */
   width: 100%;
   padding: 8px 10px;
   background-color: #d9534f;    /* red */
