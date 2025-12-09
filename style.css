@@ -144,7 +144,7 @@ input, select, textarea {
   font-size: 13px;
   border-radius: 6px;
   border: 1px solid #c7cdd4;
-  margin-bottom: 12px;   /* more vertical space between controls */
+  margin-bottom: 0px;   /* more vertical space between controls */
   box-sizing: border-box;
 }
 
