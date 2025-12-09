@@ -138,14 +138,14 @@ input, select, textarea {
   height: 100%;
 }
 
-/* FILTER DROPDOWN SIZE + SPACING */
 .filter-select {
   width: 100%;
-  padding: 6px 8px;       /* reduces box height */
-  font-size: 13px;        /* reduces text + overall size */
+  padding: 8px;
+  font-size: 13px;
   border-radius: 6px;
   border: 1px solid #c7cdd4;
-  margin-bottom: 6px;     /* reduces space between filters */
+  margin-bottom: 12px;   /* more vertical space between controls */
+  box-sizing: border-box;
 }
 
 
@@ -365,15 +365,9 @@ nav a.active {
     font-weight: bold;
 }
 
-.filter-select {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;   /* add space under each control */
-  box-sizing: border-box;
-}
-
-/* optional: make the button look like a control */
+/* Extra spacing for Heatmap button in filter panel */
 #toggleHeatmap {
+  margin-top: 6px;      /* space above the button */
   cursor: pointer;
 }
 
