@@ -39,8 +39,10 @@ collapseSidebar.addEventListener("click", () => {
 const markers = L.markerClusterGroup();
 map.addLayer(markers);
 
+
 let allComplaints = []; // store full dataset
 window.hasZoomedOnce = false;
+let heatLayer = null;
 
 // =========================
 // NORMALIZE TEXT
@@ -175,3 +177,42 @@ function applyFilters() {
 document.getElementById("filterType").addEventListener("change", applyFilters);
 document.getElementById("filterStatus").addEventListener("change", applyFilters);
 document.getElementById("filterUrgency").addEventListener("change", applyFilters);
+
+// =========================
+// HEATMAP TOGGLE BUTTON
+// =========================
+const heatBtn = document.getElementById("toggleHeatmap");
+
+if (heatBtn) {
+  heatBtn.addEventListener("click", () => {
+    // If heatmap is visible, hide it
+    if (heatLayer && map.hasLayer(heatLayer)) {
+      map.removeLayer(heatLayer);
+      return;
+    }
+
+    // Build heat points from CURRENT filtered data
+    const points = allComplaints
+      .filter(c => c.latitude && c.longitude)
+      .map(c => {
+        const u = (c.urgency || "").toLowerCase();
+        let intensity = 0.3;
+        if (u === "medium") intensity = 0.6;
+        if (u === "high") intensity = 1.0;
+        return [Number(c.latitude), Number(c.longitude), intensity];
+      });
+
+    if (!heatLayer) {
+      heatLayer = L.heatLayer(points, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 18
+      });
+    } else {
+      heatLayer.setLatLngs(points);
+    }
+
+    map.addLayer(heatLayer);
+  });
+}
+
