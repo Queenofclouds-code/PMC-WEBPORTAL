@@ -42,9 +42,9 @@ except Exception as e:
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Example using Gmail's SMTP
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'gis@aeronica.in'  # Replace with your email
-app.config['MAIL_PASSWORD'] = 'rrhicumishhnmakj'  # Replace with your email password
-app.config['MAIL_DEFAULT_SENDER'] = 'gis@aeronica.in'  # Replace with your email
+app.config['MAIL_USERNAME'] = 'meghajamdatalab@gmail.com'  # Replace with your email
+app.config['MAIL_PASSWORD'] = 'ccgfboycllkkjhvx'  # Replace with your email password
+app.config['MAIL_DEFAULT_SENDER'] = 'meghajamdatalab@gmail.com'  # Replace with your email
 mail = Mail(app)
 
 # ==========================
