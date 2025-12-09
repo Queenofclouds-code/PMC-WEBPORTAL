@@ -365,11 +365,20 @@ nav a.active {
     font-weight: bold;
 }
 
-/* Extra spacing for Heatmap button in filter panel */
+/* Style Toggle Heatmap button as red with spacing */
 #toggleHeatmap {
-  margin-top: 6px;      /* space above the button */
+  margin-top: 6px;              /* space above the button */
+  width: 100%;
+  padding: 8px 10px;
+  background-color: #d9534f;    /* red */
+  color: #ffffff;
+  border: 1px solid #b52b27;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 600;
   cursor: pointer;
 }
 
-
-
+#toggleHeatmap:hover {
+  background-color: #c9302c;    /* darker red on hover */
+}
