@@ -196,9 +196,9 @@ if (heatBtn) {
       .filter(c => c.latitude && c.longitude)
       .map(c => {
         const u = (c.urgency || "").toLowerCase();
-        let intensity = 0.3;
-        if (u === "medium") intensity = 0.6;
-        if (u === "high") intensity = 1.0;
+        let intensity = 0.9;
+        if (u === "medium") intensity = 1.6;
+        if (u === "high") intensity = 2.3;
         return [Number(c.latitude), Number(c.longitude), intensity];
       });
 
