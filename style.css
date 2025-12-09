@@ -365,4 +365,17 @@ nav a.active {
     font-weight: bold;
 }
 
+.filter-select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;   /* add space under each control */
+  box-sizing: border-box;
+}
+
+/* optional: make the button look like a control */
+#toggleHeatmap {
+  cursor: pointer;
+}
+
+
 
