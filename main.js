@@ -21,13 +21,6 @@ function refreshMap() {
 
 window.addEventListener("resize", refreshMap);
 
-// NEW: for Android WebView / mobile
-window.addEventListener("load", () => {
-  refreshMap();
-  setTimeout(refreshMap, 600);    // run twice to be safe after layout
-});
-
-
 // =====================================================
 // COLLAPSIBLE SIDEBAR LOGIC
 // =====================================================
