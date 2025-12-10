@@ -1,19 +1,16 @@
 html, body {
-    min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    height: 100%;          /* use height, not min-height */
+    margin: 0;
+    overflow: hidden;      /* no outer scroll; map layout controls scroll */
 }
-
 /* RESET + BACKGROUND IMAGE */
+/* keep your body background as is, only remove backdrop-filter if it feels heavy */
 body {
-  margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1a1a1a;
   background: url("sus.jpg") no-repeat center center fixed;
   background-size: cover;
-  backdrop-filter: brightness(0.88);
 }
-
 /* HEADER */
 .gov-header {
   background: rgba(0, 87, 183, 0.95);
@@ -113,30 +110,23 @@ input, select, textarea {
 }
 
 /* =============== VIEW COMPLAINTS PAGE LAYOUT =============== */
+/* Main view-complaints area */
 .complaints-layout {
+    position: relative;        /* add this */
     display: flex;
-    height: calc(100vh - 120px);   /* FIX */
-    min-height: calc(100vh - 120px);
-    overflow: hidden;
+    height: calc(100vh - 100px);
+    min-height: 400px;
 }
-
-
-
 
 /* LEFT FILTER PANEL */
 .filter-panel {
-  position: relative;
-  z-index: 10;
-  width: 200px;
-  background: rgba(0, 87, 183, 0.95);
-  padding: 20px 10px;
-  border-right: 2px solid #d3dce6;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  height: 100%;
+    height: 100%;
+    width: 200px;              /* add this */
+    background: rgba(0, 87, 183, 0.95);  /* if this was earlier */
+    padding: 20px 10px;
+    box-sizing: border-box;
 }
+
 
 .filter-select {
   width: 100%;
@@ -151,10 +141,12 @@ input, select, textarea {
 
 /* COLLAPSED PANEL */
 .filter-panel.collapsed {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
-  border-right: none;
+    transform: translateX(-200px); /* keep */
+    /* remove these if still present */
+    /* width: 0;
+       padding: 0;
+       overflow: hidden;
+       border-right: none; */
 }
 
 /* FILTER BUTTON */
@@ -201,12 +193,14 @@ input, select, textarea {
 }
 
 /* MAP AREA */
+/* map fills remaining height and width */
 #map {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 1;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    position: relative;
+    z-index: 1;
 }
 
 /* EXPAND MAP WHEN COLLAPSED */
@@ -231,30 +225,33 @@ button { cursor: pointer; }
 }
 
 .filter-panel.collapsed {
-  transform: translateX(-200px); /* same width as panel */
+    width: 0;                 /* add */
+    padding: 0;               /* add if you want it fully hidden */
+    overflow: hidden;         /* add */
+    border-right: none;       /* optional */
+    transform: translateX(-200px); /* keep if you like slide animation */
 }
 
-/* Collapse Button */
+
+/* Collapse Button (arrow) */
 .sidebar-toggle {
-  position: absolute;
-  top: 50%;
-  left: 200px; /* width of sidebar */
-  transform: translateY(-50%);
-  width: 28px;
-  height: 40px;
-  background: #0057b7;
-  color: white;
-  border-radius: 0 8px 8px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 2000;
-  transition: left 0.35s ease, transform 0.35s ease;
-  font-size: 20px;
+    position: absolute;
+    top: 48%;                  /* center vertically */
+    left: 200px;               /* same as sidebar width */
+    transform: translateY(-50%);
+    width: 28px;
+    height: 40px;
+    background: #0057b7;
+    color: white;
+    border-radius: 0 8px 8px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2000;
 }
 
-/* Move arrow when collapsed */
+/* When collapsed, keep it aligned with panel edge */
 .filter-panel.collapsed + .sidebar-toggle {
   left: 0;
   transform: translateY(-50%) rotate(180deg);
