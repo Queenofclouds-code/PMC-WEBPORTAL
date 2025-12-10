@@ -4,6 +4,11 @@ html, body {
     overflow-y: auto;
 }
 
+/* Only for view-complaints.html */
+body.view-complaints {
+    overflow-y: hidden;  /* no scroll on this page */
+}
+
 /* RESET + BACKGROUND IMAGE */
 body {
   margin: 0;
