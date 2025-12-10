@@ -150,13 +150,13 @@ input, select, textarea {
 
 /* COLLAPSED PANEL */
 .filter-panel.collapsed {
-    transform: translateX(-200px); /* keep */
-    /* remove these if still present */
-    /* width: 0;
-       padding: 0;
-       overflow: hidden;
-       border-right: none; */
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    border-right: none;
+    transform: translateX(-200px); /* keep this if you like the slide */
 }
+
 
 /* FILTER BUTTON */
 .filter-panel .filter-btn {
@@ -231,13 +231,6 @@ button { cursor: pointer; }
   z-index: 1000;
 }
 
-.filter-panel.collapsed {
-    width: 0;                 /* add */
-    padding: 0;               /* add if you want it fully hidden */
-    overflow: hidden;         /* add */
-    border-right: none;       /* optional */
-    transform: translateX(-200px); /* keep if you like slide animation */
-}
 
 
 /* Collapse Button */
