@@ -130,30 +130,50 @@ function redirectToLoginIfNotLoggedIn() {
 ======================= */
 async function sendOTP() {
     const email = document.getElementById("loginEmail").value.trim();
-
     if (!email || !email.includes("@")) {
         alert("Enter a valid email address");
         return;
     }
 
-    const res = await fetch("/portal/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-    });
+    // 1) Show OTP box immediately
+    const otpBox = document.getElementById("otpBox");
+    if (otpBox) otpBox.style.display = "block";
 
-    const data = await res.json();
-
-    // ❌ BLOCK UNAUTHORIZED EMAILS
-    if (!res.ok) {
-        alert(data.error || "Access denied");
-        return;
+    // Optional: show loading text/spinner
+    const sendBtn = document.getElementById("sendOtpBtn");
+    if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerText = "Sending...";
     }
 
-    // ✅ ONLY SHOW OTP BOX IF ALLOWED
-    document.getElementById("otpBox").style.display = "block";
-    alert("✅ OTP sent to your email");
+    try {
+        const res = await fetch("/portal/api/auth/send-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            // Hide OTP box again if unauthorized email or other error
+            if (otpBox) otpBox.style.display = "none";
+            alert(data.error || "Failed to send OTP");
+            return;
+        }
+
+        alert("OTP sent to your email");
+    } catch (err) {
+        if (otpBox) otpBox.style.display = "none";
+        alert("Failed to send OTP. Please try again.");
+    } finally {
+        if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.innerText = "Send OTP";
+        }
+    }
 }
+
 
 /* =======================
    VERIFY OTP
