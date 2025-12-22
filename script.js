@@ -129,19 +129,30 @@ function redirectToLoginIfNotLoggedIn() {
    SEND OTP
 ======================= */
 async function sendOTP() {
-    const email = document.getElementById("loginEmail").value;
+    const email = document.getElementById("loginEmail").value.trim();
+
     if (!email || !email.includes("@")) {
         alert("Enter a valid email address");
         return;
     }
 
-    await fetch("/portal/api/auth/send-otp", {
+    const res = await fetch("/portal/api/auth/send-otp", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email })  // Send email instead of phone
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
     });
 
+    const data = await res.json();
+
+    // ❌ BLOCK UNAUTHORIZED EMAILS
+    if (!res.ok) {
+        alert(data.error || "Access denied");
+        return;
+    }
+
+    // ✅ ONLY SHOW OTP BOX IF ALLOWED
     document.getElementById("otpBox").style.display = "block";
+    alert("✅ OTP sent to your email");
 }
 
 /* =======================
