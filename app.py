@@ -12,6 +12,10 @@ import random
 app = Flask(__name__)
 CORS(app)
 
+def is_allowed_email(email: str) -> bool:
+    return email.lower().endswith("@aeronica.in")
+
+
 # ===== SECRET KEY FOR JWT =====
 SECRET_KEY = "CHANGE_THIS_TO_A_RANDOM_SECRET_64_CHAR"
 
@@ -104,23 +108,35 @@ def admin_login():
 @app.route("/portal/api/auth/send-otp", methods=["POST"])
 def send_otp():
     data = request.json
-    email = data.get("email")
+    email = data.get("email", "").strip().lower()
 
+    # 1. Email required
     if not email:
         return jsonify({"error": "Email is required"}), 400
 
-    otp = str(random.randint(100000, 999999))  # Generate 6-digit OTP
+    # 2. DOMAIN RESTRICTION (Aeronica only)
+    if not is_allowed_email(email):
+        return jsonify({
+            "error": "Access denied. Use your official @aeronica.in email."
+        }), 403
 
-    # Store OTP in the database
-    cursor.execute("INSERT INTO otp_verification (email, otp, created_at) VALUES (%s, %s, NOW())", (email, otp))
+    # 3. Generate OTP
+    otp = str(random.randint(100000, 999999))
+
+    # 4. Store OTP
+    cursor.execute(
+        "INSERT INTO otp_verification (email, otp, created_at) VALUES (%s, %s, NOW())",
+        (email, otp)
+    )
     conn.commit()
 
-    # Send OTP via email
+    # 5. Send OTP
     msg = Message("Your OTP Code", recipients=[email])
     msg.body = f"Your OTP code is: {otp}"
     mail.send(msg)
 
     return jsonify({"message": "OTP sent successfully"})
+
 
 # ==========================
 # VERIFY OTP
