@@ -26,7 +26,7 @@ const puneRaster = L.tileLayer(
   "/portal/static/Raster_Tiles/Pune/{z}/{x}/{y}.png",
   {
     minZoom: 11,
-    maxZoom: 19,
+    maxZoom: 20,
     tms: true,        // ✅ Leaflet handles Y flip
     opacity: 0.85
   }
