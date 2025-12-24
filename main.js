@@ -27,22 +27,23 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const puneRaster = L.tileLayer(
   "/portal/static/Raster_Tiles/Pune/{z}/{x}/{y}.png",
   {
-    minZoom: 11,
-    maxZoom: 19,
-    bounds: puneRasterBounds,
-    opacity: 0.85,
+    // comment these two just for testing
+    // minZoom: 11,
+    // maxZoom: 19,
+    // and also:
+    // bounds: puneRasterBounds,
 
-    // 🔴 REQUIRED — THIS FIXES EVERYTHING
+    opacity: 0.85,
     noWrap: true,
     continuousWorld: false,
-
-    attribution: "Pune Raster Tiles"
+    attribution: "Pune Raster Tiles",
   }
 );
 
-// Add raster by default
 puneRaster.addTo(map);
-map.fitBounds(puneRasterBounds);
+// comment this too for testing
+// map.fitBounds(puneRasterBounds);
+
 
 
 
