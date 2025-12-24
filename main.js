@@ -15,7 +15,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // =========================
 // PUNE WARD NUMBERS (ON LOAD)
 // =========================
-fetch("/static/data/pune.geojson")
+fetch("/static/data/Pune.geojson")
   .then(res => res.json())
   .then(data => {
     L.geoJSON(data, {
