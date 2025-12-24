@@ -27,13 +27,13 @@ const puneRaster = L.tileLayer(
   {
     minZoom: 11,
     maxZoom: 19,
-    bounds: puneRasterBounds,
-    opacity: 0.85,
-    noWrap: true,
-    continuousWorld: false,
-    attribution: "Pune Raster Tiles",
+    tms: true,        // ✅ Leaflet handles Y flip
+    opacity: 0.85
   }
-).addTo(map);   // this adds on top
+);
+
+puneRaster.addTo(map);
+
 
 map.fitBounds(puneRasterBounds);
 
