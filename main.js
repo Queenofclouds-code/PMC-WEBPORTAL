@@ -29,17 +29,21 @@ const puneRaster = L.tileLayer(
   {
     minZoom: 11,
     maxZoom: 19,
-    bounds: puneRasterBounds,   // ✅ IMPORTANT
+    bounds: puneRasterBounds,
     opacity: 0.85,
+
+    // 🔴 REQUIRED — THIS FIXES EVERYTHING
+    noWrap: true,
+    continuousWorld: false,
+
     attribution: "Pune Raster Tiles"
   }
 );
 
 // Add raster by default
 puneRaster.addTo(map);
-
-// Optional but recommended
 map.fitBounds(puneRasterBounds);
+
 
 
 
