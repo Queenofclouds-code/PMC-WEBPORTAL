@@ -20,9 +20,10 @@ fetch("/portal/static/data/Pune.geojson")
   .then(data => {
     L.geoJSON(data, {
       style: {
-        color: "#666",
-        weight: 1,
-        fillOpacity: 0.05
+        color: "#0b5ed7",        
+        weight: 2,
+        fillColor: "#74c0fc",
+        fillOpacity: 0.25
       },
       onEachFeature: function (feature, layer) {
 
