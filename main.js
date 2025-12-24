@@ -11,6 +11,24 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 
+// =========================
+// PUNE RASTER (XYZ TILES)
+// =========================
+const puneRaster = L.tileLayer(
+  "/portal/static/Raster_Tiles/Pune/{z}/{x}/{y}.png",
+  {
+    minZoom: 11,
+    maxZoom: 19,
+    opacity: 0.85,
+    attribution: "Pune Raster Tiles"
+  }
+);
+
+// Add raster by default
+puneRaster.addTo(map);
+
+
+
 
 // =========================
 // PUNE WARD NUMBERS (ON LOAD)
