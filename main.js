@@ -10,6 +10,42 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
+
+
+// =========================
+// PUNE WARD NUMBERS (ON LOAD)
+// =========================
+fetch("/static/data/pune.geojson")
+  .then(res => res.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: {
+        color: "#666",
+        weight: 1,
+        fillOpacity: 0.05
+      },
+      onEachFeature: function (feature, layer) {
+
+        // ✅ Correct ward number field
+        const wardNo = feature.properties.wardnum;
+
+        // Place label at ward centroid
+        const center = layer.getBounds().getCenter();
+
+        L.marker(center, {
+          icon: L.divIcon({
+            className: "ward-label",
+            html: wardNo,
+            iconSize: [28, 28]
+          }),
+          interactive: false
+        }).addTo(map);
+      }
+    }).addTo(map);
+  })
+  .catch(err => console.error("Ward GeoJSON load error:", err));
+
+
 // =========================
 // GLOBAL MAP RESIZE HANDLER
 // =========================
