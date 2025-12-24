@@ -5,6 +5,16 @@
 // Initialize Map
 let map = L.map("map").setView([18.5204, 73.8567], 12);
 
+
+// =========================
+// PUNE RASTER BOUNDS
+// =========================
+const puneRasterBounds = [
+  [18.523400, 73.865117], // Lower Left (SW)
+  [18.526086, 73.867950]  // Upper Right (NE)
+];
+
+
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 20,
   attribution: "© OpenStreetMap Contributors"
@@ -19,6 +29,7 @@ const puneRaster = L.tileLayer(
   {
     minZoom: 11,
     maxZoom: 19,
+    bounds: puneRasterBounds,   // ✅ IMPORTANT
     opacity: 0.85,
     attribution: "Pune Raster Tiles"
   }
@@ -26,6 +37,9 @@ const puneRaster = L.tileLayer(
 
 // Add raster by default
 puneRaster.addTo(map);
+
+// Optional but recommended
+map.fitBounds(puneRasterBounds);
 
 
 
