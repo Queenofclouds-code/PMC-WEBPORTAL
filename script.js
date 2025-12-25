@@ -83,9 +83,15 @@ function unlockForm() {
 ======================= */
 function unlockPage() {
     if (!document.getElementById('map')) return;
-    document.querySelectorAll('.filter-select').forEach(el => el.removeAttribute('disabled'));
+    
+    // ✅ FIX: Unlock BOTH filter-select AND panel-btn
+    document.querySelectorAll('.filter-select, .panel-btn').forEach(el => {
+        el.removeAttribute('disabled');
+    });
+    
     const leftPanel = document.getElementById('leftPanel');
     if (leftPanel) leftPanel.style.cssText = 'pointer-events: auto; opacity: 1;';
+    
     const mapEl = document.getElementById('map');
     if (mapEl) mapEl.style.pointerEvents = 'auto';
 }
