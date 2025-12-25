@@ -3,6 +3,7 @@
 // =====================================================
 
 // Initialize Map
+let wardLayer = null;
 let map = L.map("map").setView([18.5204, 73.8567], 12);
 
 
@@ -29,8 +30,7 @@ const puneRaster = L.tileLayer(
     maxZoom: 25,
     maxNativeZoom: 22,
     tms: true,        // ✅ Leaflet handles Y flip
-    opacity: 1.5,
-    zIndex: 1
+    opacity: 1,
   }
 );
 
@@ -50,21 +50,20 @@ map.fitBounds(puneRasterBounds);
 fetch("/portal/static/data/Pune.geojson")
   .then(res => res.json())
   .then(data => {
-    L.geoJSON(data, {
+
+    wardLayer = L.geoJSON(data, {
       style: {
-        color: "#0b5ed7",        
+        color: "#0b5ed7",
         weight: 2,
         fillColor: "#74c0fc",
         fillOpacity: 0.25
       },
       onEachFeature: function (feature, layer) {
 
-        // ✅ Correct ward number field
         const wardNo = feature.properties.wardnum;
-
-        // Place label at ward centroid
         const center = layer.getBounds().getCenter();
 
+        // 🔹 Attach label INSIDE ward layer
         L.marker(center, {
           icon: L.divIcon({
             className: "ward-label",
@@ -72,11 +71,38 @@ fetch("/portal/static/data/Pune.geojson")
             iconSize: [28, 28]
           }),
           interactive: false
-        }).addTo(map);
+        }).addTo(layer);
       }
-    }).addTo(map);
+    });
+
+    // ✅ Show wards by default
+    wardLayer.addTo(map);
+
   })
   .catch(err => console.error("Ward GeoJSON load error:", err));
+
+
+  // =========================
+// WARDS TOGGLE BUTTON
+// =========================
+const toggleWardsBtn = document.getElementById("toggleWards");
+
+if (toggleWardsBtn) {
+  toggleWardsBtn.addEventListener("click", () => {
+
+    if (!wardLayer) return;
+
+    if (map.hasLayer(wardLayer)) {
+      map.removeLayer(wardLayer);
+      toggleWardsBtn.textContent = "Show Wards";
+    } else {
+      map.addLayer(wardLayer);
+      toggleWardsBtn.textContent = "Hide Wards";
+    }
+
+  });
+}
+
 
 
 // =========================
