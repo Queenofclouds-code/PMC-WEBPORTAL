@@ -48,10 +48,13 @@ map.fitBounds(puneRasterBounds);
 // =========================
 // PUNE WARD NUMBERS (ON LOAD)
 // =========================
+// =========================
+// PUNE WARD NUMBERS (ON LOAD) - FIXED WITH TOGGLE
+// =========================
 fetch("/portal/static/data/Pune.geojson")
   .then(res => res.json())
   .then(data => {
-    L.geoJSON(data, {
+    wardLayer = L.geoJSON(data, {  // ✅ Assign to global variable
       style: {
         color: "#0b5ed7",        
         weight: 2,
@@ -59,11 +62,7 @@ fetch("/portal/static/data/Pune.geojson")
         fillOpacity: 0.25
       },
       onEachFeature: function (feature, layer) {
-
-        // ✅ Correct ward number field
         const wardNo = feature.properties.wardnum;
-
-        // Place label at ward centroid
         const center = layer.getBounds().getCenter();
 
         L.marker(center, {
@@ -73,11 +72,20 @@ fetch("/portal/static/data/Pune.geojson")
             iconSize: [28, 28]
           }),
           interactive: false
-        }).addTo(map);
+        }).addTo(map);  // Labels still go directly to map
       }
-    }).addTo(map);
+    });
+    
+    wardLayer.addTo(map);  // ✅ Add layer (toggleable)
+      // ✅ OPTIONAL: Set initial button state (green when wards visible)
+    const wardsBtn = document.getElementById("toggleWards");
+    if (wardsBtn) {
+      wardsBtn.style.background = "#28a745";
+      wardsBtn.style.color = "white";
+    }
   })
   .catch(err => console.error("Ward GeoJSON load error:", err));
+
 
 
 // =========================
@@ -283,5 +291,25 @@ if (heatBtn) {
     });
 
     map.addLayer(heatLayer);
+  });
+}
+// =========================
+// WARDS TOGGLE BUTTON
+// =========================
+const wardsBtn = document.getElementById("toggleWards");
+
+if (wardsBtn) {
+  wardsBtn.addEventListener("click", () => {
+    if (wardLayer && map.hasLayer(wardLayer)) {
+      // Hide wards
+      map.removeLayer(wardLayer);
+      wardsBtn.textContent = "🗺️ Show Wards";
+      wardsBtn.style.background = "#dc3545"; // Red = hidden
+    } else if (wardLayer) {
+      // Show wards
+      map.addLayer(wardLayer);
+      wardsBtn.textContent = "🗺️ Hide Wards";
+      wardsBtn.style.background = "#28a745"; // Green = visible
+    }
   });
 }
