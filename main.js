@@ -17,7 +17,7 @@ const puneRasterBounds = [
 
 // OSM base
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 25,
+  maxZoom: 16,
   attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
