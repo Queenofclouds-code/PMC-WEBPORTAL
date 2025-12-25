@@ -76,8 +76,7 @@ fetch("/portal/static/data/Pune.geojson")
       }
     });
     
-    wardLayer.addTo(map);  // ✅ Add layer (toggleable)
-      // ✅ OPTIONAL: Set initial button state (green when wards visible)
+    wardLayer.addTo(map);
     const wardsBtn = document.getElementById("toggleWards");
     if (wardsBtn) {
       wardsBtn.style.background = "#28a745";
