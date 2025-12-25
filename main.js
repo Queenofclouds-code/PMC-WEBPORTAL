@@ -17,7 +17,7 @@ const puneRasterBounds = [
 
 // OSM base
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 25,
+  maxZoom: 22,
   attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
@@ -26,7 +26,7 @@ const puneRaster = L.tileLayer(
   "/portal/static/Raster_Tiles/Pune/{z}/{x}/{y}.png",
   {
     minZoom: 11,
-    maxZoom: 22,
+    maxZoom: 25,
     maxNativeZoom: 22,
     tms: true,        // ✅ Leaflet handles Y flip
     opacity: 1.5,
