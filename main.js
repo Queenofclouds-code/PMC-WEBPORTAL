@@ -28,8 +28,8 @@ const puneRaster = L.tileLayer(
     minZoom: 11,
     maxZoom: 22,
     tms: true,        // ✅ Leaflet handles Y flip
-    opacity: 0.8,
-    zIndex: 2
+    opacity: 1.5,
+    zIndex: 1
   }
 );
 
