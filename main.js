@@ -37,9 +37,6 @@ const puneRaster = L.tileLayer(
 puneRaster.addTo(map);
 
 
-map.fitBounds(puneRasterBounds);
-
-
 
 
 
