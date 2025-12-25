@@ -26,14 +26,14 @@ const puneRaster = L.tileLayer(
   "/portal/static/Raster_Tiles/Pune/{z}/{x}/{y}.png",
   {
     minZoom: 11,
-    maxZoom: 17,
-    tms: true,        // ✅ Leaflet handles Y flip
-    opacity: 1
+    maxZoom: 25,        // user can zoom till 25
+    maxNativeZoom: 18,  // raster REALLY exists till 18
+    tms: true,
+    opacity: 1,
+    noWrap: true
   }
 );
-
 puneRaster.addTo(map);
-
 
 map.fitBounds(puneRasterBounds);
 
