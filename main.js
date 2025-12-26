@@ -33,11 +33,21 @@ const puneRaster = L.tileLayer.wms(
     format: "image/png",
     transparent: true,
     version: "1.1.1",
+
+    // 🔒 IMPORTANT FIXES
     crs: L.CRS.EPSG3857,
+    minZoom: 12,
+    maxZoom: 25,          // 🔴 DO NOT exceed raster capability
+    tileSize: 256,
+    noWrap: true,
+    continuousWorld: false,
+
     attribution: "PMC GeoServer"
   }
 );
+
 puneRaster.addTo(map);
+
 
 
 // PUNE WARD NUMBERS (ON LOAD)
