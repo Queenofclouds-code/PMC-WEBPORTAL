@@ -68,7 +68,7 @@ fetch("/portal/static/data/Pune.geojson")
             iconSize: [28, 28]
           }),
           interactive: false
-        }).addTo(layer);  // Labels still go directly to map
+        }).addTo(map);  // Labels still go directly to map
       }
     });
     
