@@ -27,18 +27,16 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // GEOSERVER PUNE RASTER (WMS)
 // =========================
 const puneRaster = L.tileLayer.wms(
-  "http://143.110.254.16:8080/geoserver/Pratik/wms",
+  "https://gist.aeronica.in/geoserver/Pratik/wms",
   {
     layers: "Pratik:Pune",
-    format: "image/png",      // safe for WMS
+    format: "image/png",
     transparent: true,
     version: "1.1.1",
-    attribution: "PMC GeoServer",
-    zIndex: 1
+    crs: L.CRS.EPSG3857,
+    attribution: "PMC GeoServer"
   }
 );
-
-// Add raster to map
 puneRaster.addTo(map);
 
 
