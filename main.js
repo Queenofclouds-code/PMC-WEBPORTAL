@@ -23,29 +23,25 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 // Raster overlay
-const puneRaster = L.tileLayer(
-  "/portal/static/Raster_Tiles/Pune/{z}/{x}/{y}.png",
+// =========================
+// GEOSERVER PUNE RASTER (WMS)
+// =========================
+const puneRaster = L.tileLayer.wms(
+  "http://143.110.254.16:8080/geoserver/Pratik/wms",
   {
-    minZoom: 11,
-    maxZoom: 25,
-    maxNativeZoom: 22,
-    tms: true,        // ✅ Leaflet handles Y flip
-    opacity: 1.5,
+    layers: "Pratik:Pune",
+    format: "image/png",      // safe for WMS
+    transparent: true,
+    version: "1.1.1",
+    attribution: "PMC GeoServer",
     zIndex: 1
   }
 );
 
+// Add raster to map
 puneRaster.addTo(map);
 
 
-map.fitBounds(puneRasterBounds);
-
-
-
-
-
-
-// =========================
 // PUNE WARD NUMBERS (ON LOAD)
 // =========================
 // =========================
@@ -72,7 +68,7 @@ fetch("/portal/static/data/Pune.geojson")
             iconSize: [28, 28]
           }),
           interactive: false
-        }).addTo(map);  // Labels still go directly to map
+        }).addTo(layer);  // Labels still go directly to map
       }
     });
     
