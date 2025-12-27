@@ -60,12 +60,12 @@ puneRaster.addTo(map);
 
 const rasterRegistry = [
   {
-    name: "Pune Ortho",
+    name: "Pune",
     layer: puneRaster,
     bounds: puneRasterBounds
   },
   {
-    name: "Narmada Part",
+    name: "Narmada",
     layer: narmadaPartRaster,
     bounds: [
       [22.99, 73.54],   // SW (Lat, Lon)
