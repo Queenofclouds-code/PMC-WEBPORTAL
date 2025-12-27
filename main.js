@@ -46,11 +46,10 @@ const narmadaPartRaster = L.tileLayer.wms(
     format: "image/png",
     transparent: true,
     version: "1.1.1",
-    minZoom: 15,
-    maxZoom: 18,
-    attribution: "GeoServer – Narmada Part"
+    crs: L.CRS.EPSG3857   // 🔑 critical
   }
 );
+
 
 
 
@@ -67,8 +66,8 @@ const rasterRegistry = [
     name: "Narmada",
     layer: narmadaPartRaster,
     bounds: [
-      [23.110404269592696, 79.8824035762236],
-      [23.11836236632118,  79.89490315926614] 
+      [23.1104042696, 79.8824035762],
+      [23.1183623663, 79.8949031593]
     ]
   }
 ];
