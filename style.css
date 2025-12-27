@@ -387,3 +387,46 @@ nav a.active {
 .panel-btn:hover { opacity: 0.9; }
 
 
+.raster-dropdown {
+  margin-top: 12px;
+}
+
+#rasterBtn {
+  width: 100%;
+  background: #0d6efd;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#rasterBtn:hover {
+  background: #0b5ed7;
+}
+
+#rasterMenu {
+  display: none;
+  margin-top: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+.raster-item {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.raster-item:hover {
+  background: #f1f5ff;
+}
+
+.raster-item.active {
+  background: #e7f1ff;
+  font-weight: bold;
+}
