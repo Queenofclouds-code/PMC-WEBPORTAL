@@ -35,13 +35,90 @@ const puneRaster = L.tileLayer.wms(
     version: "1.1.1",
     crs: L.CRS.EPSG3857,
     minZoom: 12,
-    maxZoom: 25,
+    maxZoom: 19,
     attribution: "PMC GeoServer"
   }
 );
 
+const narmadaPartRaster = L.tileLayer.wms(
+  "http://143.110.254.16:8080/geoserver/Pratik/wms",
+  {
+    layers: "Pratik:Narmada_Part",
+    format: "image/png",
+    transparent: true,
+    version: "1.1.1",
+    crs: L.CRS.EPSG3857,
+    minZoom: 15,
+    maxZoom: 19,
+    attribution: "GeoServer – Narmada Part"
+  }
+);
+
+
 // Default raster
 puneRaster.addTo(map);
+
+const rasterRegistry = [
+  {
+    name: "Pune Ortho",
+    layer: puneRaster,
+    bounds: puneRasterBounds
+  },
+  {
+    name: "Narmada Part",
+    layer: narmadaPartRaster,
+    bounds: [
+      [22.99, 73.54],   // SW (Lat, Lon)
+      [23.00, 73.55]    // NE
+    ]
+  }
+];
+
+const rasterBtn = document.getElementById("rasterBtn");
+const rasterMenu = document.getElementById("rasterMenu");
+
+rasterBtn.addEventListener("click", () => {
+  rasterMenu.style.display =
+    rasterMenu.style.display === "block" ? "none" : "block";
+});
+
+rasterRegistry.forEach(r => {
+  const item = document.createElement("div");
+  item.className = "raster-item";
+  item.innerText = r.name;
+
+  item.onclick = () => {
+
+    // Remove all rasters
+    rasterRegistry.forEach(rr => {
+      if (map.hasLayer(rr.layer)) {
+        map.removeLayer(rr.layer);
+      }
+    });
+
+    // Add selected raster
+    r.layer.addTo(map);
+
+    // Zoom to raster bounds
+    map.fitBounds(r.bounds);
+
+    // UI active state
+    document.querySelectorAll(".raster-item")
+      .forEach(el => el.classList.remove("active"));
+    item.classList.add("active");
+
+    rasterMenu.style.display = "none";
+  };
+
+  rasterMenu.appendChild(item);
+});
+
+map.on("click", () => {
+  rasterMenu.style.display = "none";
+});
+
+
+
 
 
 
