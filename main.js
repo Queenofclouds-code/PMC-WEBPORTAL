@@ -43,48 +43,8 @@ const puneRaster = L.tileLayer.wms(
   }
 );
 
-const narmadaRaster = L.tileLayer.wms(
-  "http://143.110.254.16:8080/geoserver/Pratik/wms",
-  {
-    layers: "Pratik:Narmada_Ortho",
-    format: "image/png",
-    transparent: true,
-    version: "1.1.1",
-    crs: L.CRS.EPSG3857,
-    minZoom: 10,
-    maxZoom: 18,
-    attribution: "GeoServer – Narmada Ortho"
-  }
-);
-
 // Default raster
 puneRaster.addTo(map);
-
-// Toggle control
-L.control.layers(null, {
-  "Pune Ortho": puneRaster,
-  "Narmada Ortho": narmadaRaster
-}, { collapsed: false }).addTo(map);
-
-
-// =========================
-// AUTO-ZOOM ON RASTER TOGGLE
-// =========================
-map.on("overlayadd", function (e) {
-
-  if (e.name === "Pune Ortho") {
-    map.removeLayer(narmadaRaster);
-    map.fitBounds(puneRasterBounds);
-  }
-
-  if (e.name === "Narmada Ortho") {
-    map.removeLayer(puneRaster);
-    map.fitBounds([
-      [22.95, 73.45],
-      [23.20, 73.75]
-    ]);
-  }
-});
 
 
 
