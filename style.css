@@ -385,3 +385,21 @@ nav a.active {
   font-size: 14px; cursor: pointer; font-weight: 500;
 }
 .panel-btn:hover { opacity: 0.9; }
+
+
+.leaflet-control-layers {
+  background: rgba(20, 25, 40, 0.85);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.leaflet-control-layers span {
+  color: #fff;
+}
+
+.leaflet-control-layers-overlays label:hover {
+  background: rgba(255,255,255,0.08);
+}
+
