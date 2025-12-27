@@ -41,13 +41,14 @@ const puneRaster = L.tileLayer.wms(
 );
 
 const narmadaPartRaster = L.tileLayer.wms(
-  "https://geoserver.aeronica.in/geoserver/Pratik/wms",
+  "https://gist.aeronica.in/geoserver/Pratik/wms",
   {
     layers: "Pratik:Narmada_Part",
     format: "image/png",
     transparent: true,
     version: "1.1.1",
-    crs: L.CRS.EPSG3857
+    minZoom: 15,
+    maxZoom: 19
   }
 );
 
