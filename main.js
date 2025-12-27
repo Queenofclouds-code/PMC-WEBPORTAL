@@ -22,10 +22,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap Contributors"
 }).addTo(map);
 
-// Raster overlay
-// =========================
-// GEOSERVER PUNE RASTER (WMS)
-// =========================
+
 // =========================
 // GEOSERVER RASTERS
 // =========================
@@ -50,9 +47,6 @@ puneRaster.addTo(map);
 
 
 // PUNE WARD NUMBERS (ON LOAD)
-// =========================
-// =========================
-// PUNE WARD NUMBERS (ON LOAD) - FIXED WITH TOGGLE
 // =========================
 fetch("/portal/static/data/Pune.geojson")
   .then(res => res.json())
