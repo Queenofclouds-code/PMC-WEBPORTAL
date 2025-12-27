@@ -33,7 +33,6 @@ const puneRaster = L.tileLayer.wms(
     format: "image/png",
     transparent: true,
     version: "1.1.1",
-    crs: L.CRS.EPSG3857,
     minZoom: 12,
     maxZoom: 19,
     attribution: "PMC GeoServer"
@@ -47,7 +46,6 @@ const narmadaPartRaster = L.tileLayer.wms(
     format: "image/png",
     transparent: true,
     version: "1.1.1",
-    crs: L.CRS.EPSG3857,
     minZoom: 15,
     maxZoom: 18,
     attribution: "GeoServer – Narmada Part"
@@ -69,8 +67,8 @@ const rasterRegistry = [
     name: "Narmada",
     layer: narmadaPartRaster,
     bounds: [
-      [22.989, 73.537],
-      [22.99,  73.548]
+      [23.110404269592696, 79.8824035762236],
+      [23.11836236632118,  79.89490315926614] 
     ]
   }
 ];
