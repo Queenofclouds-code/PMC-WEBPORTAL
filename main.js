@@ -34,7 +34,7 @@ const puneRaster = L.tileLayer.wms(
     transparent: true,
     version: "1.1.1",
     minZoom: 12,
-    maxZoom: 19,
+    maxZoom: 25,
     attribution: "PMC GeoServer"
   }
 );
