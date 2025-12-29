@@ -65,6 +65,20 @@ const narmadaPart2Raster = L.tileLayer.wms(
   }
 );
 
+const mpRaster = L.tileLayer.wms(
+  "https://gist.aeronica.in/geoserver/Pratik/wms",
+  {
+    layers: "Pratik:MP",
+    format: "image/png",
+    transparent: true,
+    version: "1.1.1",
+    crs: L.CRS.EPSG3857,
+    minZoom: 12,
+    maxZoom: 25,
+  }
+);
+
+
 
 
 
@@ -91,6 +105,14 @@ const rasterRegistry = [
     bounds: [ 
       [23.1165, 79.8835], 
       [23.1220, 79.8860]   
+    ]
+  },
+  {
+    name: "Madhya Pradesh",
+    layer : mpRaster,
+    bounds : [
+      [22.2032, 78.9014],
+      [22.2090, 78.9078]
     ]
   }
   
