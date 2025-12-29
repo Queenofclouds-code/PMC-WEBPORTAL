@@ -59,8 +59,8 @@ const narmadaPart2Raster = L.tileLayer.wms(
     format: "image/png",
     transparent: true,
     version: "1.1.1",
-    minZoom: 8,
-    maxZoom: 19,
+    minZoom: 12,
+    maxZoom: 25,
     crs: L.CRS.EPSG3857
   }
 );
@@ -88,9 +88,9 @@ const rasterRegistry = [
   {
     name: "Narmada Part2",
     layer: narmadaPart2Raster,
-    bounds: [  // ✅ Converted from your URL
-      [23.1165, 79.8835],  // SW corner (approx)
-      [23.1220, 79.8860]   // NE corner (approx)
+    bounds: [ 
+      [23.1165, 79.8835], 
+      [23.1220, 79.8860]   
     ]
   }
   
