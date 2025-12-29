@@ -103,8 +103,8 @@ const rasterRegistry = [
     name: "Narmada Part2",
     layer: narmadaPart2Raster,
     bounds: [ 
-      [23.1165, 79.8805], 
-      [23.1220, 79.8830]   
+      [23.1165, 79.8755], 
+      [23.1220, 79.8780]   
     ]
   },
   {
