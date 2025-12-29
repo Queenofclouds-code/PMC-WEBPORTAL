@@ -111,8 +111,8 @@ const rasterRegistry = [
     name: "Madhya Pradesh",
     layer : mpRaster,
     bounds : [
-      [22.2032, 78.9014],
-      [22.2090, 78.9078]
+      [22.2129, 74.3523],
+      [22.2169, 74.3563]
     ]
   }
   
