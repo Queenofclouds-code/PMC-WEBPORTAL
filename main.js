@@ -46,6 +46,8 @@ const narmadaPartRaster = L.tileLayer.wms(
     format: "image/png",
     transparent: true,
     version: "1.1.1",
+    minZoom: 12,
+    maxZoom : 25,
     crs: L.CRS.EPSG3857   // 🔑 critical
   }
 );
