@@ -52,6 +52,19 @@ const narmadaPartRaster = L.tileLayer.wms(
   }
 );
 
+const narmadaPart2Raster = L.tileLayer.wms(
+  "https://gist.aeronica.in/geoserver/Pratik/wms",
+  {
+    layers: "Pratik:Narmada_Part2",
+    format: "image/png",
+    transparent: true,
+    version: "1.1.1",
+    minZoom: 8,
+    maxZoom: 19,
+    crs: L.CRS.EPSG3857
+  }
+);
+
 
 
 
@@ -71,7 +84,16 @@ const rasterRegistry = [
       [23.1104042696, 79.8824035762],
       [23.1183623663, 79.8949031593]
     ]
+  },
+  {
+    name: "Narmada Part2",
+    layer: narmadaPart2Raster,
+    bounds: [  // ✅ Converted from your URL
+      [23.1165, 79.8835],  // SW corner (approx)
+      [23.1220, 79.8860]   // NE corner (approx)
+    ]
   }
+  
 ];
 
 const rasterBtn = document.getElementById("rasterBtn");
@@ -386,3 +408,9 @@ if (wardsBtn) {
     }
   });
 }
+
+
+
+
+
+
