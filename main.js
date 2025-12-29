@@ -89,8 +89,8 @@ const rasterRegistry = [
     name: "Narmada Part2",
     layer: narmadaPart2Raster,
     bounds: [  // ✅ Converted from your URL
-      [23.0609, 79.8052],  // SW corner (approx)
-      [23.0911, 79.8328]   // NE corner (approx)
+      [23.1165, 79.8835],  // SW corner (approx)
+      [23.1220, 79.8860]   // NE corner (approx)
     ]
   }
   
