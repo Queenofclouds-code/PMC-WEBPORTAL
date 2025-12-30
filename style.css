@@ -14,14 +14,14 @@ body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
   color: #1a1a1a;
-  background: url("sus.jpg") no-repeat center center fixed;
+  background: url("Sustainable.jpg") no-repeat center center fixed;
   background-size: cover;
   backdrop-filter: brightness(0.88);
 }
 
 /* HEADER */
 .gov-header {
-  background: rgba(0, 87, 183, 0.95);
+  background: rgba(22, 103, 170, 0.95);
   color: white;
   width: 100%;
   padding: 15px 10px;
